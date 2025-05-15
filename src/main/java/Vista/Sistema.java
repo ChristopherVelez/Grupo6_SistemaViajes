@@ -6,7 +6,9 @@ package Vista;
 
 import Modelo.ClienteDAO;
 import Modelo.ClienteDTO;
+import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -16,10 +18,32 @@ public class Sistema extends javax.swing.JFrame {
 
     ClienteDTO cl = new ClienteDTO();
     ClienteDAO client =new ClienteDAO();
+    DefaultTableModel modelo = new DefaultTableModel();
     public Sistema() {
         initComponents();
+        this.setLocationRelativeTo(null);
+    }
+    public void ListarCliente(){
+        List<ClienteDTO> ListarCl = client.ListarCliente();
+        modelo = (DefaultTableModel) TableCliente.getModel();
+        Object[] ob = new Object[5];
+        for (int i = 0; i<ListarCl.size(); i++){
+            ob[0] = ListarCl.get(i).getcodigoCliente();
+            ob[1] = ListarCl.get(i).getDni();
+            ob[2] = ListarCl.get(i).getNombre();
+            ob[3] = ListarCl.get(i).getTelefono();
+            ob[4] = ListarCl.get(i).getDireccion();
+            modelo.addRow(ob);
+        }
+        TableCliente.setModel(modelo);
     }
 
+    
+    public void LimpiarTabla() {
+    while (modelo.getRowCount() > 0) {
+        modelo.removeRow(0);
+    }
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -60,7 +84,7 @@ public class Sistema extends javax.swing.JFrame {
         TableCliente = new javax.swing.JTable();
         btnAgregarCliente = new javax.swing.JButton();
         btnNuevoCliente = new javax.swing.JButton();
-        btnActualizarCliente = new javax.swing.JButton();
+        btnEditarCliente = new javax.swing.JButton();
         btnEliminarCliente = new javax.swing.JButton();
         txtDireccion = new javax.swing.JTextField();
         jLabel17 = new javax.swing.JLabel();
@@ -71,6 +95,7 @@ public class Sistema extends javax.swing.JFrame {
         txtDNI = new javax.swing.JTextField();
         jLabel14 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
+        txtCodigoCliente = new javax.swing.JTextField();
         jPanel5 = new javax.swing.JPanel();
         jLabel19 = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
@@ -89,7 +114,7 @@ public class Sistema extends javax.swing.JFrame {
         cmbEstadoFactura = new javax.swing.JComboBox<>();
         jTextField3 = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
+        btnCliente = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
@@ -206,7 +231,7 @@ public class Sistema extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtEstadoReserva, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
+                            .addComponent(txtEstadoReserva, javax.swing.GroupLayout.DEFAULT_SIZE, 178, Short.MAX_VALUE)
                             .addComponent(txtAsientoAsignado)
                             .addComponent(jLabel13)
                             .addComponent(txtPrecioPasaje, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -297,6 +322,11 @@ public class Sistema extends javax.swing.JFrame {
                 "Código Cliente", "DNI", "Nombre", "Teléfono", "Dirección"
             }
         ));
+        TableCliente.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TableClienteMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(TableCliente);
 
         btnAgregarCliente.setText("Agregar Cliente");
@@ -313,10 +343,10 @@ public class Sistema extends javax.swing.JFrame {
             }
         });
 
-        btnActualizarCliente.setText("Actualizar");
-        btnActualizarCliente.addActionListener(new java.awt.event.ActionListener() {
+        btnEditarCliente.setText("Editar");
+        btnEditarCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnActualizarClienteActionPerformed(evt);
+                btnEditarClienteActionPerformed(evt);
             }
         });
 
@@ -343,6 +373,8 @@ public class Sistema extends javax.swing.JFrame {
             }
         });
 
+        txtCodigoCliente.setEnabled(false);
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -364,13 +396,16 @@ public class Sistema extends javax.swing.JFrame {
                             .addComponent(btnAgregarCliente, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnActualizarCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnEditarCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnNuevoCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(jLabel14))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel14)
+                        .addGap(54, 54, 54)
+                        .addComponent(txtCodigoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE))
+                    .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 718, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 718, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -379,7 +414,9 @@ public class Sistema extends javax.swing.JFrame {
                 .addGap(3, 3, 3)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(txtCodigoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(txtDNI, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel15)
@@ -396,7 +433,7 @@ public class Sistema extends javax.swing.JFrame {
                         .addGap(64, 64, 64)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnAgregarCliente)
-                            .addComponent(btnActualizarCliente))
+                            .addComponent(btnEditarCliente))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnEliminarCliente)
@@ -513,8 +550,8 @@ public class Sistema extends javax.swing.JFrame {
                         .addGap(71, 71, 71)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 631, Short.MAX_VALUE)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 631, Short.MAX_VALUE))
+                    .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
@@ -558,11 +595,11 @@ public class Sistema extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(255, 204, 153));
 
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Cliente.png"))); // NOI18N
-        jButton1.setText("Cliente");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnCliente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Cliente.png"))); // NOI18N
+        btnCliente.setText("Cliente");
+        btnCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnClienteActionPerformed(evt);
             }
         });
 
@@ -587,14 +624,14 @@ public class Sistema extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE)
-            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap(62, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addComponent(btnCliente)
                 .addGap(32, 32, 32)
                 .addComponent(jButton2)
                 .addGap(31, 31, 31)
@@ -659,9 +696,11 @@ public class Sistema extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClienteActionPerformed
+        LimpiarTabla();
+        ListarCliente();
+        jTabbedPane1.setSelectedIndex(1);
+    }//GEN-LAST:event_btnClienteActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
@@ -679,7 +718,10 @@ public class Sistema extends javax.swing.JFrame {
         cl.setDireccion(txtDireccion.getText());
         client.RegistrarCliente(cl);
         JOptionPane.showMessageDialog(null, "Cliente Registrado");
-              
+            LimpiarTabla();
+            ListarCliente();  
+            LimpiarCliente();
+
     }else{
         JOptionPane.showMessageDialog(null, "Los campos estan vacios");
 
@@ -690,12 +732,40 @@ public class Sistema extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnNuevoClienteActionPerformed
 
-    private void btnActualizarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarClienteActionPerformed
+    private void btnEditarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarClienteActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnActualizarClienteActionPerformed
+        if("".equals(txtCodigoCliente.getText())){
+            JOptionPane.showMessageDialog(null,"seleccione una fila");
+        }else{
+            cl.setDni(txtDNI.getText());
+            cl.setNombre(txtNombreCliente.getText());
+            cl.setTelefono(txtTelefono.getText());
+            cl.setDireccion(txtDireccion.getText());
+            cl.setcodigoCliente(Integer.parseInt(txtCodigoCliente.getText()));
+                if(!"".equals(txtDNI.getText())&&!"".equals(txtNombreCliente.getText())&&!"".equals(txtTelefono.getText())&&!"".equals(txtDireccion.getText())){
+                client.ModificarCliente(cl);
+                LimpiarTabla();
+                LimpiarCliente();
+                ListarCliente();
+                }else{
+                    JOptionPane.showMessageDialog(null, "Los campos estan vacios");
+                    }
+
+        }
+    }//GEN-LAST:event_btnEditarClienteActionPerformed
 
     private void btnEliminarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarClienteActionPerformed
         // TODO add your handling code here:
+        if(!"".equals(txtCodigoCliente.getText())){
+            int pregunta = JOptionPane.showConfirmDialog(null,"Esta seguro de eliminar");
+            if(pregunta ==0){
+                int CodigoCliente = Integer.parseInt(txtCodigoCliente.getText());
+                client.EliminarCliente(CodigoCliente);
+                LimpiarTabla();
+                ListarCliente();
+                LimpiarCliente();
+            }
+        }
     }//GEN-LAST:event_btnEliminarClienteActionPerformed
 
     private void btnEmitirFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmitirFacturaActionPerformed
@@ -746,6 +816,16 @@ public class Sistema extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField3ActionPerformed
 
+    private void TableClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableClienteMouseClicked
+        // TODO add your handling code here:
+        int fila = TableCliente.rowAtPoint(evt.getPoint());
+        txtCodigoCliente.setText(TableCliente.getValueAt(fila, 0).toString());
+        txtDNI.setText(TableCliente.getValueAt(fila, 1).toString());
+        txtNombreCliente.setText(TableCliente.getValueAt(fila, 2).toString());
+        txtTelefono.setText(TableCliente.getValueAt(fila, 3).toString());
+        txtDireccion.setText(TableCliente.getValueAt(fila, 4).toString());
+    }//GEN-LAST:event_TableClienteMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -786,11 +866,12 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JTable TableCliente;
     private javax.swing.JTable TableFactura;
     private javax.swing.JTable TableReservarPasaje;
-    private javax.swing.JButton btnActualizarCliente;
     private javax.swing.JButton btnActualizarFactura;
     private javax.swing.JButton btnActualizarReserva;
     private javax.swing.JButton btnAgregarCliente;
     private javax.swing.JButton btnAgregarReserva;
+    private javax.swing.JButton btnCliente;
+    private javax.swing.JButton btnEditarCliente;
     private javax.swing.JButton btnEliminarCliente;
     private javax.swing.JButton btnEliminarFactura;
     private javax.swing.JButton btnEliminarReserva;
@@ -802,7 +883,6 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cmbCodigoReserva;
     private javax.swing.JComboBox<String> cmbEstadoFactura;
     private javax.swing.JComboBox<String> cmbMetodoPago;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -838,6 +918,7 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField txtAsientoAsignado;
+    private javax.swing.JTextField txtCodigoCliente;
     private javax.swing.JTextField txtDNI;
     private javax.swing.JTextField txtDestino;
     private javax.swing.JTextField txtDireccion;
@@ -850,4 +931,12 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JTextField txtTelefono;
     private javax.swing.JTextField tztFechaViaje;
     // End of variables declaration//GEN-END:variables
+private void LimpiarCliente(){
+    txtCodigoCliente.setText("");
+    txtDNI.setText("");
+    txtNombreCliente.setText("");
+    txtTelefono.setText("");
+    txtDireccion.setText("");
+
+}
 }

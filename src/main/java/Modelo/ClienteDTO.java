@@ -19,20 +19,20 @@ public class ClienteDTO {
     }
 
     
-    public ClienteDTO(int id, String dni, String nombre, String telefono, String direccion) {
-        this.codigoCliente = id;
+    public ClienteDTO(int codigoCliente, String dni, String nombre, String telefono, String direccion) {
+        this.codigoCliente = codigoCliente;
         this.dni = dni;
         this.nombre = nombre;
         this.telefono = telefono;
         this.direccion = direccion;
     }
 
-    public int getId() {
+    public int getcodigoCliente() {
         return codigoCliente;
     }
 
-    public void setId(int id) {
-        this.codigoCliente = id;
+    public void setcodigoCliente(int codigoCliente) {
+        this.codigoCliente = codigoCliente;
     }
 
     public String getDni() {

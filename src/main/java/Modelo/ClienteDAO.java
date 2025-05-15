@@ -4,9 +4,12 @@
  */
 package Modelo;
 
+import java.util.List;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 /**
@@ -17,6 +20,7 @@ public class ClienteDAO {
     Conexion cn = new Conexion();
     Connection con;
     PreparedStatement ps;
+    ResultSet rs;
 
     public boolean RegistrarCliente(ClienteDTO cl){
         String sql ="INSERT INTO clientes (dni,nombre,telefono,direccion) VALUES (?,?,?,?)";
@@ -41,6 +45,69 @@ public class ClienteDAO {
         }
     }
     }
-
-
+    
+    public List ListarCliente(){
+        List<ClienteDTO> ListaCl = new ArrayList();
+        String sql = "SELECT * FROM clientes";
+        try{
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while(rs.next()){
+                ClienteDTO cl = new ClienteDTO();
+                cl.setcodigoCliente(rs.getInt("codigoCliente"));
+                cl.setDni(rs.getString("DNI"));
+                cl.setNombre(rs.getString("Nombre"));
+                cl.setTelefono(rs.getString("Telefono"));
+                cl.setDireccion(rs.getString("Direccion"));
+                ListaCl.add(cl);
+            }
+        }catch (SQLException e){
+            System.out.println(e.toString());
+        }
+        return ListaCl;    
+    }
+    public boolean EliminarCliente(int CodigoCliente){
+            String sql="DELETE FROM clientes WHERE CodigoCliente = ?";
+            
+            try{
+                ps= con.prepareStatement(sql);
+                ps.setInt(1, CodigoCliente);
+                ps.execute();
+                return true;
+            }catch(SQLException e){
+                System.out.println(e.toString());
+                return false;
+            }finally{
+                try{
+                    con.close();
+                    
+                }catch(SQLException ex){
+                    System.out.println(ex.toString());
+                }
+            }
+        }
+    
+    public boolean ModificarCliente(ClienteDTO cl){
+        String sql = "UPDATE clientes SET dni=?,nombre=?,telefono=?,direccion=? WHERE CodigoCliente=?";
+        try{
+            ps = con.prepareStatement(sql);
+            ps.setString(1, cl.getDni());
+            ps.setString(2,cl.getNombre());
+            ps.setString(3,cl.getTelefono());
+            ps.setString(4,cl.getDireccion());
+            ps.setInt(5, cl.getcodigoCliente());
+            ps.execute();
+            return true;
+        }catch(SQLException e){
+            System.out.println(e.toString());
+            return false;
+        }finally{
+            try{
+                con.close();
+            }catch (SQLException e){
+                System.out.println(e.toString());
+            }
+        }
+    }
 }
