@@ -17,17 +17,19 @@ import javax.swing.table.DefaultTableModel;
 public class Sistema extends javax.swing.JFrame {
 
     ClienteDTO cl = new ClienteDTO();
-    ClienteDAO client =new ClienteDAO();
+    ClienteDAO client = new ClienteDAO();
     DefaultTableModel modelo = new DefaultTableModel();
+
     public Sistema() {
         initComponents();
         this.setLocationRelativeTo(null);
     }
-    public void ListarCliente(){
+
+    public void ListarCliente() {
         List<ClienteDTO> ListarCl = client.ListarCliente();
         modelo = (DefaultTableModel) TableCliente.getModel();
         Object[] ob = new Object[5];
-        for (int i = 0; i<ListarCl.size(); i++){
+        for (int i = 0; i < ListarCl.size(); i++) {
             ob[0] = ListarCl.get(i).getcodigoCliente();
             ob[1] = ListarCl.get(i).getDni();
             ob[2] = ListarCl.get(i).getNombre();
@@ -38,12 +40,12 @@ public class Sistema extends javax.swing.JFrame {
         TableCliente.setModel(modelo);
     }
 
-    
     public void LimpiarTabla() {
-    while (modelo.getRowCount() > 0) {
-        modelo.removeRow(0);
+        while (modelo.getRowCount() > 0) {
+            modelo.removeRow(0);
+        }
     }
-}
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -711,21 +713,21 @@ public class Sistema extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void btnAgregarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarClienteActionPerformed
-    if(!"".equals(txtDNI.getText())&&!"".equals(txtNombreCliente.getText())&&!"".equals(txtTelefono.getText())&&!"".equals(txtDireccion.getText())){
-        cl.setDni(txtDNI.getText());
-        cl.setNombre(txtNombreCliente.getText());
-        cl.setTelefono(txtTelefono.getText());
-        cl.setDireccion(txtDireccion.getText());
-        client.RegistrarCliente(cl);
-        JOptionPane.showMessageDialog(null, "Cliente Registrado");
+        if (!"".equals(txtDNI.getText()) && !"".equals(txtNombreCliente.getText()) && !"".equals(txtTelefono.getText()) && !"".equals(txtDireccion.getText())) {
+            cl.setDni(txtDNI.getText());
+            cl.setNombre(txtNombreCliente.getText());
+            cl.setTelefono(txtTelefono.getText());
+            cl.setDireccion(txtDireccion.getText());
+            client.RegistrarCliente(cl);
+            JOptionPane.showMessageDialog(null, "Cliente Registrado");
             LimpiarTabla();
-            ListarCliente();  
+            ListarCliente();
             LimpiarCliente();
 
-    }else{
-        JOptionPane.showMessageDialog(null, "Los campos estan vacios");
+        } else {
+            JOptionPane.showMessageDialog(null, "Los campos estan vacios");
 
-    }
+        }
     }//GEN-LAST:event_btnAgregarClienteActionPerformed
 
     private void btnNuevoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoClienteActionPerformed
@@ -734,31 +736,32 @@ public class Sistema extends javax.swing.JFrame {
 
     private void btnEditarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarClienteActionPerformed
         // TODO add your handling code here:
-        if("".equals(txtCodigoCliente.getText())){
-            JOptionPane.showMessageDialog(null,"seleccione una fila");
-        }else{
-            cl.setDni(txtDNI.getText());
-            cl.setNombre(txtNombreCliente.getText());
-            cl.setTelefono(txtTelefono.getText());
-            cl.setDireccion(txtDireccion.getText());
-            cl.setcodigoCliente(Integer.parseInt(txtCodigoCliente.getText()));
-                if(!"".equals(txtDNI.getText())&&!"".equals(txtNombreCliente.getText())&&!"".equals(txtTelefono.getText())&&!"".equals(txtDireccion.getText())){
+        if ("".equals(txtCodigoCliente.getText())) {
+            JOptionPane.showMessageDialog(null, "seleccione una fila");
+        } else {
+
+            if (!"".equals(txtDNI.getText()) && !"".equals(txtNombreCliente.getText()) && !"".equals(txtTelefono.getText()) && !"".equals(txtDireccion.getText())) {
+                cl.setDni(txtDNI.getText());
+                cl.setNombre(txtNombreCliente.getText());
+                cl.setTelefono(txtTelefono.getText());
+                cl.setDireccion(txtDireccion.getText());
+                cl.setcodigoCliente(Integer.parseInt(txtCodigoCliente.getText()));
                 client.ModificarCliente(cl);
                 LimpiarTabla();
                 LimpiarCliente();
                 ListarCliente();
-                }else{
-                    JOptionPane.showMessageDialog(null, "Los campos estan vacios");
-                    }
+            } else {
+                JOptionPane.showMessageDialog(null, "Los campos estan vacios");
+            }
 
         }
     }//GEN-LAST:event_btnEditarClienteActionPerformed
 
     private void btnEliminarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarClienteActionPerformed
         // TODO add your handling code here:
-        if(!"".equals(txtCodigoCliente.getText())){
-            int pregunta = JOptionPane.showConfirmDialog(null,"Esta seguro de eliminar");
-            if(pregunta ==0){
+        if (!"".equals(txtCodigoCliente.getText())) {
+            int pregunta = JOptionPane.showConfirmDialog(null, "Esta seguro de eliminar");
+            if (pregunta == 0) {
                 int CodigoCliente = Integer.parseInt(txtCodigoCliente.getText());
                 client.EliminarCliente(CodigoCliente);
                 LimpiarTabla();
@@ -931,12 +934,12 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JTextField txtTelefono;
     private javax.swing.JTextField tztFechaViaje;
     // End of variables declaration//GEN-END:variables
-private void LimpiarCliente(){
-    txtCodigoCliente.setText("");
-    txtDNI.setText("");
-    txtNombreCliente.setText("");
-    txtTelefono.setText("");
-    txtDireccion.setText("");
+private void LimpiarCliente() {
+        txtCodigoCliente.setText("");
+        txtDNI.setText("");
+        txtNombreCliente.setText("");
+        txtTelefono.setText("");
+        txtDireccion.setText("");
 
-}
+    }
 }
