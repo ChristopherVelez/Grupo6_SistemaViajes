@@ -23,6 +23,7 @@ public class Sistema extends javax.swing.JFrame {
     public Sistema() {
         initComponents();
         this.setLocationRelativeTo(null);
+        txtCodigoCliente.setVisible(false);
     }
 
     public void ListarCliente() {
@@ -732,6 +733,7 @@ public class Sistema extends javax.swing.JFrame {
 
     private void btnNuevoClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoClienteActionPerformed
         // TODO add your handling code here:
+        LimpiarCliente();
     }//GEN-LAST:event_btnNuevoClienteActionPerformed
 
     private void btnEditarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarClienteActionPerformed
