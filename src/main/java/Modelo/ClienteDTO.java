@@ -9,6 +9,7 @@ package Modelo;
  * @author Mini Wernaso
  */
 public class ClienteDTO {
+
     private int codigoCliente;
     private String dni;
     private String nombre;
@@ -18,7 +19,6 @@ public class ClienteDTO {
     public ClienteDTO() {
     }
 
-    
     public ClienteDTO(int codigoCliente, String dni, String nombre, String telefono, String direccion) {
         this.codigoCliente = codigoCliente;
         this.dni = dni;
@@ -66,5 +66,14 @@ public class ClienteDTO {
     public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
-    
+
+     /**
+     *
+     * @return
+     */
+    @Override
+    public String toString() {
+        return this.getNombre();
+    }
+
 }
