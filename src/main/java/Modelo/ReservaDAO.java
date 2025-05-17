@@ -72,6 +72,33 @@ public class ReservaDAO {
         return false;
     }
 
+   
+    // Para EDITAR, excluye la misma reserva (por su ID)
+public boolean asientoYaReservado(String origen, String destino, String fecha, String hora, String asiento, int idReservaActual) {
+    String sql = "SELECT COUNT(*) FROM reservas WHERE Origen = ? AND Destino = ? AND FechaViaje = ? AND HoraSalida = ? AND AsientoAsignado = ? AND Estado = 1 AND CodigoReserva <> ?";
+    try {
+        con = cn.getConnection();
+        ps = con.prepareStatement(sql);
+        ps.setString(1, origen);
+        ps.setString(2, destino);
+        ps.setString(3, fecha);
+        ps.setString(4, hora);
+        ps.setString(5, asiento);
+        ps.setInt(6, idReservaActual); 
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            return rs.getInt(1) > 0;
+        }
+    } catch (SQLException ex) {
+        ex.printStackTrace();
+    }
+    return false;
+}
+
+    
+    
+    
+    
     public List ListarReservas() {
         List<ReservaDTO> ListaRs = new ArrayList<>();
         String sql = "SELECT r.*"

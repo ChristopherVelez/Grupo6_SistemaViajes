@@ -29,11 +29,13 @@ public class Sistema extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
         txtCodigoCliente.setVisible(false);
         txtCodigoReserva.setVisible(false);
-
         CargarClientesEnComboBox();
+        ListarCliente();
+        ListarReservas();
     }
 
     public void ListarCliente() {
+        LimpiarTabla();
         List<ClienteDTO> ListarCl = client.ListarCliente();
         modelo = (DefaultTableModel) TableCliente.getModel();
         Object[] ob = new Object[5];
@@ -49,6 +51,7 @@ public class Sistema extends javax.swing.JFrame {
     }
 
     public void ListarReservas() {
+                LimpiarTabla();
         List<ReservaDTO> ListarRs = reservadao.ListarReservas();
         modelo = (DefaultTableModel) TableReservarPasaje.getModel(); // Asegúrate del nombre de tu JTable
         Object[] ob = new Object[8];
@@ -100,7 +103,6 @@ public class Sistema extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         txtFechaViaje = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
-        txtHoraSalida = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
         txtPrecioPasaje = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
@@ -108,6 +110,7 @@ public class Sistema extends javax.swing.JFrame {
         jTextField1 = new javax.swing.JTextField();
         txtCodigoReserva = new javax.swing.JTextField();
         txtAsientoAsignado = new javax.swing.JTextField();
+        cmbHoraSalida = new javax.swing.JComboBox<>();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         TableCliente = new javax.swing.JTable();
@@ -251,6 +254,8 @@ public class Sistema extends javax.swing.JFrame {
 
         txtCodigoReserva.setEditable(false);
 
+        cmbHoraSalida.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "07:00:00", "08:00:00", "09:00:00", "10:00:00", "11:00:00", "12:00:00", "13:00:00", "14:00:00", "15:00:00", "16:00:00", "17:00:00", "18:00:00", "19:00:00", "20:00:00" }));
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -270,9 +275,9 @@ public class Sistema extends javax.swing.JFrame {
                             .addComponent(txtOrigen, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtHoraSalida, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cmbCodigoCliente, 0, 141, Short.MAX_VALUE))
+                            .addComponent(cmbCodigoCliente, 0, 141, Short.MAX_VALUE)
+                            .addComponent(cmbHoraSalida, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnEliminarReserva, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -337,15 +342,15 @@ public class Sistema extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnNuevaReserva)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtHoraSalida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26))
+                        .addComponent(cmbHoraSalida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)))
                 .addComponent(txtCodigoReserva, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(30, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("tab1", jPanel2);
@@ -831,7 +836,7 @@ public class Sistema extends javax.swing.JFrame {
     private void btnAgregarReservaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarReservaActionPerformed
         // TODO add your handling code here:
         if (!"".equals(txtOrigen.getText()) && !"".equals(txtDestino.getText())
-                && !"".equals(txtFechaViaje.getText()) && !"".equals(txtHoraSalida.getText())
+                && !"".equals(txtFechaViaje.getText()) && cmbHoraSalida.getSelectedItem() != null
                 && !"".equals(txtPrecioPasaje.getText()) && !"".equals(txtAsientoAsignado.getText())) {
 
             try {
@@ -842,7 +847,7 @@ public class Sistema extends javax.swing.JFrame {
                         txtOrigen.getText(),
                         txtDestino.getText(),
                         txtFechaViaje.getText(),
-                        txtHoraSalida.getText(),
+                        cmbHoraSalida.getSelectedItem().toString(),
                         txtAsientoAsignado.getText()
                 );
 
@@ -855,7 +860,7 @@ public class Sistema extends javax.swing.JFrame {
                 reservadto.setOrigen(txtOrigen.getText());
                 reservadto.setDestino(txtDestino.getText());
                 reservadto.setFechaViaje(txtFechaViaje.getText());
-                reservadto.setHoraSalida(txtHoraSalida.getText());
+                reservadto.setHoraSalida(cmbHoraSalida.getSelectedItem().toString());
                 reservadto.setAsientoAsignado(txtAsientoAsignado.getText());
                 reservadto.setPrecioPasaje(Double.parseDouble(txtPrecioPasaje.getText()));
 
@@ -885,7 +890,7 @@ public class Sistema extends javax.swing.JFrame {
                     && !"".equals(txtOrigen.getText())
                     && !"".equals(txtDestino.getText())
                     && !"".equals(txtFechaViaje.getText())
-                    && !"".equals(txtHoraSalida.getText())
+                    && cmbHoraSalida.getSelectedItem() != null
                     && !"".equals(txtAsientoAsignado.getText())
                     && !"".equals(txtPrecioPasaje.getText())) {
 
@@ -898,8 +903,9 @@ public class Sistema extends javax.swing.JFrame {
                             txtOrigen.getText(),
                             txtDestino.getText(),
                             txtFechaViaje.getText(),
-                            txtHoraSalida.getText(),
-                            txtAsientoAsignado.getText()
+                            cmbHoraSalida.getSelectedItem().toString(),
+                            txtAsientoAsignado.getText(),
+                            codigoReserva 
                     );
 
                     if (ocupado) {
@@ -913,7 +919,7 @@ public class Sistema extends javax.swing.JFrame {
                     reservadto.setOrigen(txtOrigen.getText());
                     reservadto.setDestino(txtDestino.getText());
                     reservadto.setFechaViaje(txtFechaViaje.getText());
-                    reservadto.setHoraSalida(txtHoraSalida.getText());
+                    reservadto.setHoraSalida(cmbHoraSalida.getSelectedItem().toString());
                     reservadto.setAsientoAsignado(txtAsientoAsignado.getText());
                     reservadto.setPrecioPasaje(Double.parseDouble(txtPrecioPasaje.getText()));
 
@@ -995,7 +1001,7 @@ public class Sistema extends javax.swing.JFrame {
             txtOrigen.setText(TableReservarPasaje.getValueAt(fila, 2).toString());
             txtDestino.setText(TableReservarPasaje.getValueAt(fila, 3).toString());
             txtFechaViaje.setText(TableReservarPasaje.getValueAt(fila, 4).toString());
-            txtHoraSalida.setText(TableReservarPasaje.getValueAt(fila, 5).toString());
+            cmbHoraSalida.setSelectedItem(TableReservarPasaje.getValueAt(fila, 5).toString());
             txtAsientoAsignado.setText(TableReservarPasaje.getValueAt(fila, 6).toString());
             txtPrecioPasaje.setText(TableReservarPasaje.getValueAt(fila, 7).toString());
 
@@ -1061,6 +1067,7 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> cmbCodigoCliente;
     private javax.swing.JComboBox<String> cmbCodigoReserva;
     private javax.swing.JComboBox<String> cmbEstadoFactura;
+    private javax.swing.JComboBox<String> cmbHoraSalida;
     private javax.swing.JComboBox<String> cmbMetodoPago;
     private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton2;
@@ -1102,7 +1109,6 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JTextField txtDestino;
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtFechaViaje;
-    private javax.swing.JTextField txtHoraSalida;
     private javax.swing.JTextField txtMontoTotal;
     private javax.swing.JTextField txtNombreCliente;
     private javax.swing.JTextField txtOrigen;
@@ -1122,7 +1128,7 @@ private void LimpiarCliente() {
         txtOrigen.setText("");
         txtDestino.setText("");
         txtFechaViaje.setText("");
-        txtHoraSalida.setText("");
+        cmbHoraSalida.setSelectedIndex(-1); // Deselecciona el combo
         txtPrecioPasaje.setText("");
         txtAsientoAsignado.setText("");
         cmbCodigoCliente.setSelectedIndex(-1); // Deselecciona el combo
