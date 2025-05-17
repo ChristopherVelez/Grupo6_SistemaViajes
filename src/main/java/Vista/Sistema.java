@@ -55,7 +55,7 @@ public class Sistema extends javax.swing.JFrame {
 
         for (int i = 0; i < ListarRs.size(); i++) {
             ob[0] = ListarRs.get(i).getCodigoReserva();
-            ob[1] = ListarRs.get(i).getNombreCliente();
+            ob[1] = ListarRs.get(i).getCodigoCliente();
             ob[2] = ListarRs.get(i).getOrigen();
             ob[3] = ListarRs.get(i).getDestino();
             ob[4] = ListarRs.get(i).getFechaViaje();
@@ -87,12 +87,12 @@ public class Sistema extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         TableReservarPasaje = new javax.swing.JTable();
-        btnActualizarReserva = new javax.swing.JButton();
+        btnEditarReserva = new javax.swing.JButton();
         btnAgregarReserva = new javax.swing.JButton();
         btnNuevaReserva = new javax.swing.JButton();
         btnEliminarReserva = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
-        cmbCodigoCliente = new javax.swing.JComboBox<Modelo.ClienteDTO>();
+        cmbCodigoCliente = new javax.swing.JComboBox<>();
         jLabel7 = new javax.swing.JLabel();
         txtOrigen = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
@@ -170,12 +170,17 @@ public class Sistema extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
+        TableReservarPasaje.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TableReservarPasajeMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(TableReservarPasaje);
 
-        btnActualizarReserva.setText("Actualizar");
-        btnActualizarReserva.addActionListener(new java.awt.event.ActionListener() {
+        btnEditarReserva.setText("Editar");
+        btnEditarReserva.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnActualizarReservaActionPerformed(evt);
+                btnEditarReservaActionPerformed(evt);
             }
         });
 
@@ -271,7 +276,7 @@ public class Sistema extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnEliminarReserva, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnActualizarReserva, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnEditarReserva, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnAgregarReserva, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(btnNuevaReserva, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(txtPrecioPasaje)
@@ -304,7 +309,6 @@ public class Sistema extends javax.swing.JFrame {
                                     .addGroup(jPanel2Layout.createSequentialGroup()
                                         .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(28, 28, 28)))
-                                .addGap(18, 18, 18)
                                 .addComponent(jLabel7)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(txtOrigen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -329,7 +333,7 @@ public class Sistema extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnEliminarReserva)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnActualizarReserva)
+                                .addComponent(btnEditarReserva)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(btnNuevaReserva)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -341,7 +345,7 @@ public class Sistema extends javax.swing.JFrame {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)))
                 .addComponent(txtCodigoReserva, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("tab1", jPanel2);
@@ -831,7 +835,7 @@ public class Sistema extends javax.swing.JFrame {
                 && !"".equals(txtPrecioPasaje.getText()) && !"".equals(txtAsientoAsignado.getText())) {
 
             try {
-                ClienteDTO clienteSeleccionado = (ClienteDTO) cmbCodigoCliente.getSelectedItem();
+                int codigoCliente = Integer.parseInt(cmbCodigoCliente.getSelectedItem().toString());
 
                 // Validar si el asiento ya está reservado
                 boolean ocupado = reservadao.asientoYaReservado(
@@ -847,7 +851,7 @@ public class Sistema extends javax.swing.JFrame {
                     return;
                 }
 
-                reservadto.setCodigoCliente(clienteSeleccionado.getcodigoCliente());
+                reservadto.setCodigoCliente(codigoCliente);
                 reservadto.setOrigen(txtOrigen.getText());
                 reservadto.setDestino(txtDestino.getText());
                 reservadto.setFechaViaje(txtFechaViaje.getText());
@@ -871,16 +875,84 @@ public class Sistema extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnAgregarReservaActionPerformed
 
-    private void btnActualizarReservaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarReservaActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnActualizarReservaActionPerformed
+
+    private void btnEditarReservaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarReservaActionPerformed
+        if ("".equals(txtCodigoReserva.getText())) {
+            JOptionPane.showMessageDialog(null, "Seleccione una fila");
+        } else {
+            // Validar campos obligatorios
+            if (cmbCodigoCliente.getSelectedItem() != null
+                    && !"".equals(txtOrigen.getText())
+                    && !"".equals(txtDestino.getText())
+                    && !"".equals(txtFechaViaje.getText())
+                    && !"".equals(txtHoraSalida.getText())
+                    && !"".equals(txtAsientoAsignado.getText())
+                    && !"".equals(txtPrecioPasaje.getText())) {
+
+                try {
+                    int codigoReserva = Integer.parseInt(txtCodigoReserva.getText());
+                    int codigoCliente = Integer.parseInt(cmbCodigoCliente.getSelectedItem().toString());
+
+                    // Verificar si el asiento ya está reservado por otra reserva
+                    boolean ocupado = reservadao.asientoYaReservado(
+                            txtOrigen.getText(),
+                            txtDestino.getText(),
+                            txtFechaViaje.getText(),
+                            txtHoraSalida.getText(),
+                            txtAsientoAsignado.getText()
+                    );
+
+                    if (ocupado) {
+                        JOptionPane.showMessageDialog(null, "El asiento ya está reservado.");
+                        return;
+                    }
+
+                    // Crear el objeto ReservaDTO con los nuevos datos
+                    reservadto.setCodigoReserva(codigoReserva);
+                    reservadto.setCodigoCliente(codigoCliente);
+                    reservadto.setOrigen(txtOrigen.getText());
+                    reservadto.setDestino(txtDestino.getText());
+                    reservadto.setFechaViaje(txtFechaViaje.getText());
+                    reservadto.setHoraSalida(txtHoraSalida.getText());
+                    reservadto.setAsientoAsignado(txtAsientoAsignado.getText());
+                    reservadto.setPrecioPasaje(Double.parseDouble(txtPrecioPasaje.getText()));
+
+                    // Editar la reserva
+                    if (reservadao.editarReserva(reservadto)) {
+                        JOptionPane.showMessageDialog(null, "Reserva actualizada correctamente.");
+                        LimpiarTabla();
+                        ListarReservas();
+                        LimpiarReserva();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Error al actualizar la reserva.");
+                    }
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Error: " + e.getMessage());
+                }
+
+            } else {
+                JOptionPane.showMessageDialog(null, "Todos los campos son obligatorios.");
+            }
+        }
+    }//GEN-LAST:event_btnEditarReservaActionPerformed
 
     private void btnNuevaReservaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaReservaActionPerformed
         // TODO add your handling code here:
+        LimpiarReserva();
     }//GEN-LAST:event_btnNuevaReservaActionPerformed
 
     private void btnEliminarReservaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarReservaActionPerformed
         // TODO add your handling code here:
+        if (!"".equals(txtCodigoReserva.getText())) {
+            int pregunta = JOptionPane.showConfirmDialog(null, "Esta seguro de eliminar");
+            if (pregunta == 0) {
+                int CodigoReserva = Integer.parseInt(txtCodigoReserva.getText());
+                reservadao.eliminarReserva(CodigoReserva);
+                LimpiarTabla();
+                ListarReservas();
+                LimpiarReserva();
+            }
+        }
     }//GEN-LAST:event_btnEliminarReservaActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
@@ -913,6 +985,25 @@ public class Sistema extends javax.swing.JFrame {
         // TODO add your handling code here:
         CargarClientesEnComboBox();
     }//GEN-LAST:event_cmbCodigoClienteMouseClicked
+
+    private void TableReservarPasajeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableReservarPasajeMouseClicked
+        // TODO add your handling code here:
+        try {
+            int fila = TableReservarPasaje.rowAtPoint(evt.getPoint());
+            txtCodigoReserva.setText(TableReservarPasaje.getValueAt(fila, 0).toString());
+            cmbCodigoCliente.setSelectedItem(TableReservarPasaje.getValueAt(fila, 1).toString());
+            txtOrigen.setText(TableReservarPasaje.getValueAt(fila, 2).toString());
+            txtDestino.setText(TableReservarPasaje.getValueAt(fila, 3).toString());
+            txtFechaViaje.setText(TableReservarPasaje.getValueAt(fila, 4).toString());
+            txtHoraSalida.setText(TableReservarPasaje.getValueAt(fila, 5).toString());
+            txtAsientoAsignado.setText(TableReservarPasaje.getValueAt(fila, 6).toString());
+            txtPrecioPasaje.setText(TableReservarPasaje.getValueAt(fila, 7).toString());
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al seleccionar la fila: " + e.getMessage());
+        }
+
+    }//GEN-LAST:event_TableReservarPasajeMouseClicked
 
     /**
      * @param args the command line arguments
@@ -955,11 +1046,11 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JTable TableFactura;
     private javax.swing.JTable TableReservarPasaje;
     private javax.swing.JButton btnActualizarFactura;
-    private javax.swing.JButton btnActualizarReserva;
     private javax.swing.JButton btnAgregarCliente;
     private javax.swing.JButton btnAgregarReserva;
     private javax.swing.JButton btnCliente;
     private javax.swing.JButton btnEditarCliente;
+    private javax.swing.JButton btnEditarReserva;
     private javax.swing.JButton btnEliminarCliente;
     private javax.swing.JButton btnEliminarFactura;
     private javax.swing.JButton btnEliminarReserva;
@@ -967,7 +1058,7 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JButton btnNuevaFactura;
     private javax.swing.JButton btnNuevaReserva;
     private javax.swing.JButton btnNuevoCliente;
-    private javax.swing.JComboBox<ClienteDTO> cmbCodigoCliente;
+    private javax.swing.JComboBox<String> cmbCodigoCliente;
     private javax.swing.JComboBox<String> cmbCodigoReserva;
     private javax.swing.JComboBox<String> cmbEstadoFactura;
     private javax.swing.JComboBox<String> cmbMetodoPago;
@@ -1026,25 +1117,24 @@ private void LimpiarCliente() {
         txtDireccion.setText("");
 
     }
-private void LimpiarReserva() {
-    txtOrigen.setText("");
-    txtDestino.setText("");
-    txtFechaViaje.setText("");
-    txtHoraSalida.setText("");
-    txtPrecioPasaje.setText("");
-    txtAsientoAsignado.setText("");
-    cmbCodigoCliente.setSelectedIndex(-1); // Deselecciona el combo
-}
 
+    private void LimpiarReserva() {
+        txtOrigen.setText("");
+        txtDestino.setText("");
+        txtFechaViaje.setText("");
+        txtHoraSalida.setText("");
+        txtPrecioPasaje.setText("");
+        txtAsientoAsignado.setText("");
+        cmbCodigoCliente.setSelectedIndex(-1); // Deselecciona el combo
+    }
 
     public void CargarClientesEnComboBox() {
-        List<ClienteDTO> listaClientes = client.ListarCliente();
         cmbCodigoCliente.removeAllItems();
+        List<ClienteDTO> listaClientes = client.ListarCliente();
 
         for (ClienteDTO cl : listaClientes) {
-            cmbCodigoCliente.addItem(cl);  // Añades el objeto completo
+            cmbCodigoCliente.addItem(String.valueOf(cl.getcodigoCliente()));
         }
-
     }
 
 }

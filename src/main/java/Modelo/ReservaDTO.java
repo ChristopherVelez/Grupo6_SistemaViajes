@@ -14,15 +14,9 @@ public class ReservaDTO {
     private String horaSalida;
     private String asientoAsignado;
     private double precioPasaje;
-private String nombreCliente;
 
-    public String getNombreCliente() {
-        return nombreCliente;
-    }
+   
 
-    public void setNombreCliente(String nombreCliente) {
-        this.nombreCliente = nombreCliente;
-    }
 
     public ReservaDTO() {
     }

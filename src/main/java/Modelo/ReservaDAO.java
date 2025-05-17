@@ -52,11 +52,10 @@ public class ReservaDAO {
     }
 
     public boolean asientoYaReservado(String origen, String destino, String fecha, String hora, String asiento) {
-        String sql = "SELECT COUNT(*) FROM reservas WHERE Origen = ? AND Destino = ? AND FechaViaje = ? AND HoraSalida = ? AND AsientoAsignado = ?";
+        String sql = "SELECT COUNT(*) FROM reservas WHERE Origen = ? AND Destino = ? AND FechaViaje = ? AND HoraSalida = ? AND AsientoAsignado = ? AND Estado = 1";
         try {
             con = cn.getConnection();
             ps = con.prepareStatement(sql);
-
             ps.setString(1, origen);
             ps.setString(2, destino);
             ps.setString(3, fecha);
@@ -73,31 +72,79 @@ public class ReservaDAO {
         return false;
     }
 
-   public List ListarReservas() {
-    List<ReservaDTO> ListaRs = new ArrayList<>();
-    String sql = "SELECT r.*, c.Nombre FROM reservas r JOIN clientes c ON r.CodigoCliente = c.codigoCliente";
-    try {
-        con = cn.getConnection();
-        ps = con.prepareStatement(sql);
-        rs = ps.executeQuery();
-        while (rs.next()) {
-            ReservaDTO rsdto = new ReservaDTO();
-            rsdto.setCodigoReserva(rs.getInt("CodigoReserva"));
-            rsdto.setCodigoCliente(rs.getInt("CodigoCliente"));
-            rsdto.setOrigen(rs.getString("Origen"));
-            rsdto.setDestino(rs.getString("Destino"));
-            rsdto.setFechaViaje(rs.getString("FechaViaje"));
-            rsdto.setHoraSalida(rs.getString("HoraSalida"));
-            rsdto.setAsientoAsignado(rs.getString("AsientoAsignado"));
-            rsdto.setPrecioPasaje(rs.getDouble("PrecioPasaje"));
-            rsdto.setNombreCliente(rs.getString("Nombre"));  // <-- Aquí traes el nombre
-            ListaRs.add(rsdto);
+    public List ListarReservas() {
+        List<ReservaDTO> ListaRs = new ArrayList<>();
+        String sql = "SELECT r.*"
+                + "FROM reservas r "
+                + "JOIN clientes c ON r.CodigoCliente = c.CodigoCliente "
+                + "WHERE r.Estado = 1 AND c.Estado = 1";
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                ReservaDTO rsdto = new ReservaDTO();
+                rsdto.setCodigoReserva(rs.getInt("CodigoReserva"));
+                rsdto.setCodigoCliente(rs.getInt("CodigoCliente"));
+                rsdto.setOrigen(rs.getString("Origen"));
+                rsdto.setDestino(rs.getString("Destino"));
+                rsdto.setFechaViaje(rs.getString("FechaViaje"));
+                rsdto.setHoraSalida(rs.getString("HoraSalida"));
+                rsdto.setAsientoAsignado(rs.getString("AsientoAsignado"));
+                rsdto.setPrecioPasaje(rs.getDouble("PrecioPasaje"));
+                ListaRs.add(rsdto);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.toString());
         }
-    } catch (SQLException e) {
-        System.out.println(e.toString());
+        return ListaRs;
     }
-    return ListaRs;
-}
 
+    public boolean eliminarReserva(int codigoReserva) {
+        String sql = "UPDATE reservas SET Estado = 0 WHERE CodigoReserva = ?";
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, codigoReserva);
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.toString());
+            return false;
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public boolean editarReserva(ReservaDTO re) {
+        String sql = "UPDATE reservas SET CodigoCliente = ?, Origen = ?, Destino = ?, FechaViaje = ?, HoraSalida = ?, AsientoAsignado = ?, PrecioPasaje = ? WHERE CodigoReserva = ?";
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, re.getCodigoCliente());
+            ps.setString(2, re.getOrigen());
+            ps.setString(3, re.getDestino());
+            ps.setString(4, re.getFechaViaje());
+            ps.setString(5, re.getHoraSalida());
+            ps.setString(6, re.getAsientoAsignado());
+            ps.setDouble(7, re.getPrecioPasaje());
+            ps.setInt(8, re.getCodigoReserva());
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e.toString());
+            return false;
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 
 }
