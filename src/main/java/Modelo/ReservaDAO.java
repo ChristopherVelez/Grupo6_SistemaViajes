@@ -173,5 +173,46 @@ public boolean asientoYaReservado(String origen, String destino, String fecha, S
             }
         }
     }
+    
+    
+    
+     public List<ReservaDTO> buscarReservasPorClienteOCodigo(String filtro) {
+    List<ReservaDTO> lista = new ArrayList<>();
+    String sql = "SELECT * FROM reservas WHERE Estado = 1 AND ("
+            + "CAST(CodigoReserva AS CHAR) LIKE ? OR CAST(CodigoCliente AS CHAR) LIKE ?)";
+    try {
+        con = cn.getConnection();
+        ps = con.prepareStatement(sql);
+        String likeFiltro = "%" + filtro + "%";
+        ps.setString(1, likeFiltro);
+        ps.setString(2, likeFiltro);
+        rs = ps.executeQuery();
+
+        while (rs.next()) {
+            ReservaDTO r = new ReservaDTO();
+            r.setCodigoReserva(rs.getInt("CodigoReserva"));
+            r.setCodigoCliente(rs.getInt("CodigoCliente"));
+            r.setOrigen(rs.getString("Origen"));
+            r.setDestino(rs.getString("Destino"));
+            r.setFechaViaje(rs.getString("FechaViaje"));
+            r.setHoraSalida(rs.getString("HoraSalida"));
+            r.setAsientoAsignado(rs.getString("AsientoAsignado"));
+            r.setPrecioPasaje(rs.getDouble("PrecioPasaje"));
+            lista.add(r);
+        }
+    } catch (SQLException e) {
+        System.out.println("Error: " + e.getMessage());
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+            if (con != null) con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    return lista;
+}
+
 
 }

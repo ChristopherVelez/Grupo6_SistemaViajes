@@ -96,26 +96,72 @@ public class ClienteDAO {
         }
     }
 
-    public boolean ModificarCliente(ClienteDTO cl) {
-        String sql = "UPDATE clientes SET dni=?,nombre=?,telefono=?,direccion=? WHERE CodigoCliente=?";
+   public boolean ModificarCliente(ClienteDTO cl) {
+    String sql = "UPDATE clientes SET dni=?, nombre=?, telefono=?, direccion=? WHERE CodigoCliente=?";
+    try {
+        con = cn.getConnection();   // abrir conexión aquí
+        ps = con.prepareStatement(sql);
+        ps.setString(1, cl.getDni());
+        ps.setString(2, cl.getNombre());
+        ps.setString(3, cl.getTelefono());
+        ps.setString(4, cl.getDireccion());
+        ps.setInt(5, cl.getcodigoCliente());
+        ps.executeUpdate();
+        return true;
+    } catch (SQLException e) {
+        System.out.println(e.toString());
+        return false;
+    } finally {
         try {
-            ps = con.prepareStatement(sql);
-            ps.setString(1, cl.getDni());
-            ps.setString(2, cl.getNombre());
-            ps.setString(3, cl.getTelefono());
-            ps.setString(4, cl.getDireccion());
-            ps.setInt(5, cl.getcodigoCliente());
-            ps.execute();
-            return true;
+            if (con != null) con.close();
         } catch (SQLException e) {
             System.out.println(e.toString());
-            return false;
-        } finally {
-            try {
-                con.close();
-            } catch (SQLException e) {
-                System.out.println(e.toString());
-            }
         }
     }
+}
+
+
+    public List<ClienteDTO> buscarClientesPorCodigoDniNombre(String filtro) {
+        List<ClienteDTO> lista = new ArrayList<>();
+        String sql = "SELECT * FROM clientes WHERE Estado = 1 AND ("
+        + "CAST(CodigoCliente AS CHAR) LIKE ? OR DNI LIKE ? OR Nombre LIKE ?)";
+
+        try {
+            con = cn.getConnection();
+            ps = con.prepareStatement(sql);
+            String likeFiltro = "%" + filtro + "%";
+            ps.setString(1, likeFiltro);
+            ps.setString(2, likeFiltro);
+            ps.setString(3, likeFiltro);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                ClienteDTO c = new ClienteDTO();
+                c.setcodigoCliente(rs.getInt("CodigoCliente"));
+                c.setDni(rs.getString("DNI"));
+                c.setNombre(rs.getString("Nombre"));
+                c.setTelefono(rs.getString("Telefono"));
+                c.setDireccion(rs.getString("Direccion"));
+                lista.add(c);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return lista;
+    }
+
 }
