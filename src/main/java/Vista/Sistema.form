@@ -658,11 +658,11 @@
                                   <Group type="102" alignment="0" attributes="0">
                                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
                                           <Component id="btnEliminarFactura" alignment="0" max="32767" attributes="0"/>
-                                          <Component id="btnEmitirFactura" alignment="0" max="32767" attributes="0"/>
+                                          <Component id="btnAgregarFactura" alignment="0" max="32767" attributes="0"/>
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="btnActualizarFactura" min="-2" max="-2" attributes="0"/>
+                                          <Component id="btnEditarFactura" min="-2" max="-2" attributes="0"/>
                                           <Component id="btnNuevaFactura" max="32767" attributes="0"/>
                                       </Group>
                                   </Group>
@@ -672,7 +672,7 @@
                                           <Component id="jLabel20" alignment="0" min="-2" max="-2" attributes="0"/>
                                           <Component id="jLabel21" alignment="0" min="-2" max="-2" attributes="0"/>
                                           <Component id="jLabel22" alignment="0" min="-2" max="-2" attributes="0"/>
-                                          <Component id="cmbCodigoReserva" alignment="0" pref="168" max="32767" attributes="0"/>
+                                          <Component id="cmbCodigoClienteFactura" alignment="0" pref="168" max="32767" attributes="0"/>
                                           <Component id="txtMontoTotal" alignment="0" max="32767" attributes="0"/>
                                           <Component id="cmbMetodoPago" alignment="0" max="32767" attributes="0"/>
                                           <Component id="cmbEstadoFactura" max="32767" attributes="0"/>
@@ -689,7 +689,7 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jTextField3" pref="704" max="32767" attributes="0"/>
+                          <Component id="txtBuscarFactura" pref="704" max="32767" attributes="0"/>
                           <Component id="jScrollPane3" pref="704" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -702,12 +702,12 @@
                       <EmptySpace min="-2" pref="3" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel19" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jTextField3" alignment="3" pref="51" max="32767" attributes="0"/>
+                          <Component id="txtBuscarFactura" alignment="3" pref="51" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <Component id="cmbCodigoReserva" min="-2" max="-2" attributes="0"/>
+                              <Component id="cmbCodigoClienteFactura" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="jLabel20" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -722,8 +722,8 @@
                               <Component id="cmbEstadoFactura" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="btnEmitirFactura" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="btnActualizarFactura" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnAgregarFactura" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="btnEditarFactura" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="3" attributes="0">
@@ -743,7 +743,7 @@
           <SubComponents>
             <Component class="javax.swing.JLabel" name="jLabel19">
               <Properties>
-                <Property name="text" type="java.lang.String" value="C&#xf3;digo de reserva"/>
+                <Property name="text" type="java.lang.String" value="C&#xf3;digo de Cliente"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel20">
@@ -763,20 +763,20 @@
                 <Property name="text" type="java.lang.String" value="Estado de factura&#x9;"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="btnEmitirFactura">
+            <Component class="javax.swing.JButton" name="btnAgregarFactura">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Emitir Factura"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEmitirFacturaActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAgregarFacturaActionPerformed"/>
               </Events>
             </Component>
-            <Component class="javax.swing.JButton" name="btnActualizarFactura">
+            <Component class="javax.swing.JButton" name="btnEditarFactura">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Editar"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnActualizarFacturaActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnEditarFacturaActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="jButton13">
@@ -802,12 +802,12 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JTable" name="TableFactura">
+                <Component class="javax.swing.JTable" name="TableFacturas">
                   <Properties>
                     <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                       <Table columnCount="6" rowCount="0">
                         <Column editable="true" title="C&#xf3;digo de factura&#x9;" type="java.lang.Object"/>
-                        <Column editable="true" title="C&#xf3;digo de reserva&#x9;" type="java.lang.Object"/>
+                        <Column editable="true" title="C&#xf3;digo de cliente" type="java.lang.Object"/>
                         <Column editable="true" title="Fecha de emisi&#xf3;n&#x9;" type="java.lang.Object"/>
                         <Column editable="true" title="Monto total&#x9;" type="java.lang.Object"/>
                         <Column editable="true" title="M&#xe9;todo de pago&#x9;" type="java.lang.Object"/>
@@ -855,17 +855,16 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JComboBox" name="cmbCodigoReserva">
+            <Component class="javax.swing.JComboBox" name="cmbCodigoClienteFactura">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="4">
-                    <StringItem index="0" value="Item 1"/>
-                    <StringItem index="1" value="Item 2"/>
-                    <StringItem index="2" value="Item 3"/>
-                    <StringItem index="3" value="Item 4"/>
-                  </StringArray>
+                  <StringArray count="0"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="cmbCodigoClienteFacturaMouseClicked"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="cmbCodigoClienteFacturaActionPerformed"/>
+              </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
@@ -881,11 +880,9 @@
             <Component class="javax.swing.JComboBox" name="cmbMetodoPago">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="4">
-                    <StringItem index="0" value="Item 1"/>
-                    <StringItem index="1" value="Item 2"/>
-                    <StringItem index="2" value="Item 3"/>
-                    <StringItem index="3" value="Item 4"/>
+                  <StringArray count="2">
+                    <StringItem index="0" value="Efectivo"/>
+                    <StringItem index="1" value="Tarjeta"/>
                   </StringArray>
                 </Property>
               </Properties>
@@ -896,11 +893,10 @@
             <Component class="javax.swing.JComboBox" name="cmbEstadoFactura">
               <Properties>
                 <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-                  <StringArray count="4">
-                    <StringItem index="0" value="Item 1"/>
-                    <StringItem index="1" value="Item 2"/>
-                    <StringItem index="2" value="Item 3"/>
-                    <StringItem index="3" value="Item 4"/>
+                  <StringArray count="3">
+                    <StringItem index="0" value="Pagado"/>
+                    <StringItem index="1" value="Pendiente"/>
+                    <StringItem index="2" value="Anulado"/>
                   </StringArray>
                 </Property>
               </Properties>
@@ -908,13 +904,13 @@
                 <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
               </AuxValues>
             </Component>
-            <Component class="javax.swing.JTextField" name="jTextField3">
+            <Component class="javax.swing.JTextField" name="txtBuscarFactura">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Buscar:"/>
                 <Property name="toolTipText" type="java.lang.String" value=""/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextField3ActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtBuscarFacturaActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>
@@ -933,7 +929,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Component id="btnReserva" pref="215" max="32767" attributes="0"/>
               <Component id="btnCliente" alignment="0" max="32767" attributes="0"/>
-              <Component id="jButton3" alignment="0" max="32767" attributes="0"/>
+              <Component id="btnFactura" alignment="0" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -944,7 +940,7 @@
                   <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
                   <Component id="btnReserva" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
-                  <Component id="jButton3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnFactura" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="136" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -973,15 +969,15 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnReservaActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton3">
+        <Component class="javax.swing.JButton" name="btnFactura">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/Pago.png"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Pago de reserva"/>
+            <Property name="text" type="java.lang.String" value="Facturador"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton3ActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnFacturaActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

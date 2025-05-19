@@ -6,12 +6,17 @@ package Vista;
 
 import Modelo.ClienteDAO;
 import Modelo.ClienteDTO;
+import Modelo.FacturaDAO;
+import Modelo.FacturaDTO;
 import Modelo.ReservaDAO;
 import Modelo.ReservaDTO;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import com.formdev.flatlaf.FlatLightLaf;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 import javax.swing.UIManager;
 
 /**
@@ -24,6 +29,8 @@ public class Sistema extends javax.swing.JFrame {
     ClienteDAO client = new ClienteDAO();
     ReservaDTO reservadto = new ReservaDTO();
     ReservaDAO reservadao = new ReservaDAO();
+    FacturaDTO facturadto = new FacturaDTO();
+    FacturaDAO facturadao = new FacturaDAO();
     DefaultTableModel modelo = new DefaultTableModel();
 
     public Sistema() {
@@ -42,6 +49,7 @@ public class Sistema extends javax.swing.JFrame {
         CargarClientesEnComboBox();
         ListarReservas();
         ListarCliente();
+        ListarFacturas();
     }
 
     public void ListarCliente() {
@@ -80,6 +88,27 @@ public class Sistema extends javax.swing.JFrame {
 
         TableReservarPasaje.setModel(modelo);
     }
+    public void ListarFacturas() {
+    LimpiarTabla();  
+    List<FacturaDTO> listaFacturas = facturadao.ListarFacturas();
+    modelo = (DefaultTableModel) TableFacturas.getModel();
+    Object[] ob = new Object[6];
+
+    for (int i = 0; i < listaFacturas.size(); i++) {
+
+        ob[0] = listaFacturas.get(i).getCodigoFactura();        
+        ob[1] = listaFacturas.get(i).getCodigoCliente();
+        ob[2] = listaFacturas.get(i).getFechaEmision();
+        ob[3] = listaFacturas.get(i).getMontoTotal();
+        ob[4] = listaFacturas.get(i).getMetodoPago();
+        ob[5] = listaFacturas.get(i).getEstadoFactura();
+
+        modelo.addRow(ob);
+    }
+
+    TableFacturas.setModel(modelo);
+}
+
 
     public void LimpiarTabla() {
         while (modelo.getRowCount() > 0) {
@@ -144,21 +173,21 @@ public class Sistema extends javax.swing.JFrame {
         txtMontoTotal = new javax.swing.JTextField();
         jLabel21 = new javax.swing.JLabel();
         jLabel22 = new javax.swing.JLabel();
-        btnEmitirFactura = new javax.swing.JButton();
-        btnActualizarFactura = new javax.swing.JButton();
+        btnAgregarFactura = new javax.swing.JButton();
+        btnEditarFactura = new javax.swing.JButton();
         jButton13 = new javax.swing.JButton();
         btnEliminarFactura = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
-        TableFactura = new javax.swing.JTable();
-        cmbCodigoReserva = new javax.swing.JComboBox<>();
+        TableFacturas = new javax.swing.JTable();
+        cmbCodigoClienteFactura = new javax.swing.JComboBox<>();
         btnNuevaFactura = new javax.swing.JButton();
         cmbMetodoPago = new javax.swing.JComboBox<>();
         cmbEstadoFactura = new javax.swing.JComboBox<>();
-        jTextField3 = new javax.swing.JTextField();
+        txtBuscarFactura = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
         btnCliente = new javax.swing.JButton();
         btnReserva = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnFactura = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -506,7 +535,7 @@ public class Sistema extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Reservas", jPanel2);
 
-        jLabel19.setText("Código de reserva");
+        jLabel19.setText("Código de Cliente");
 
         jLabel20.setText("Monto total\t");
 
@@ -514,17 +543,17 @@ public class Sistema extends javax.swing.JFrame {
 
         jLabel22.setText("Estado de factura\t");
 
-        btnEmitirFactura.setText("Emitir Factura");
-        btnEmitirFactura.addActionListener(new java.awt.event.ActionListener() {
+        btnAgregarFactura.setText("Emitir Factura");
+        btnAgregarFactura.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEmitirFacturaActionPerformed(evt);
+                btnAgregarFacturaActionPerformed(evt);
             }
         });
 
-        btnActualizarFactura.setText("Editar");
-        btnActualizarFactura.addActionListener(new java.awt.event.ActionListener() {
+        btnEditarFactura.setText("Editar");
+        btnEditarFactura.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnActualizarFacturaActionPerformed(evt);
+                btnEditarFacturaActionPerformed(evt);
             }
         });
 
@@ -542,17 +571,26 @@ public class Sistema extends javax.swing.JFrame {
             }
         });
 
-        TableFactura.setModel(new javax.swing.table.DefaultTableModel(
+        TableFacturas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Código de factura	", "Código de reserva	", "Fecha de emisión	", "Monto total	", "Método de pago	", "Estado de factura	"
+                "Código de factura	", "Código de cliente", "Fecha de emisión	", "Monto total	", "Método de pago	", "Estado de factura	"
             }
         ));
-        jScrollPane3.setViewportView(TableFactura);
+        jScrollPane3.setViewportView(TableFacturas);
 
-        cmbCodigoReserva.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbCodigoClienteFactura.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cmbCodigoClienteFacturaMouseClicked(evt);
+            }
+        });
+        cmbCodigoClienteFactura.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cmbCodigoClienteFacturaActionPerformed(evt);
+            }
+        });
 
         btnNuevaFactura.setText("Nuevo");
         btnNuevaFactura.addActionListener(new java.awt.event.ActionListener() {
@@ -561,15 +599,15 @@ public class Sistema extends javax.swing.JFrame {
             }
         });
 
-        cmbMetodoPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbMetodoPago.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Efectivo", "Tarjeta" }));
 
-        cmbEstadoFactura.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbEstadoFactura.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Pagado", "Pendiente", "Anulado" }));
 
-        jTextField3.setText("Buscar:");
-        jTextField3.setToolTipText("");
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
+        txtBuscarFactura.setText("Buscar:");
+        txtBuscarFactura.setToolTipText("");
+        txtBuscarFactura.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
+                txtBuscarFacturaActionPerformed(evt);
             }
         });
 
@@ -585,10 +623,10 @@ public class Sistema extends javax.swing.JFrame {
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addComponent(btnEliminarFactura, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnEmitirFactura, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                    .addComponent(btnAgregarFactura, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnActualizarFactura)
+                                    .addComponent(btnEditarFactura)
                                     .addComponent(btnNuevaFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                             .addGroup(jPanel5Layout.createSequentialGroup()
                                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -596,7 +634,7 @@ public class Sistema extends javax.swing.JFrame {
                                     .addComponent(jLabel20)
                                     .addComponent(jLabel21)
                                     .addComponent(jLabel22)
-                                    .addComponent(cmbCodigoReserva, 0, 168, Short.MAX_VALUE)
+                                    .addComponent(cmbCodigoClienteFactura, 0, 168, Short.MAX_VALUE)
                                     .addComponent(txtMontoTotal)
                                     .addComponent(cmbMetodoPago, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(cmbEstadoFactura, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -607,7 +645,7 @@ public class Sistema extends javax.swing.JFrame {
                         .addGap(71, 71, 71)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 704, Short.MAX_VALUE)
+                    .addComponent(txtBuscarFactura, javax.swing.GroupLayout.DEFAULT_SIZE, 704, Short.MAX_VALUE)
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 704, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -617,11 +655,11 @@ public class Sistema extends javax.swing.JFrame {
                 .addGap(3, 3, 3)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel19)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE))
+                    .addComponent(txtBuscarFactura, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(cmbCodigoReserva, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(cmbCodigoClienteFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel20)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -636,8 +674,8 @@ public class Sistema extends javax.swing.JFrame {
                         .addComponent(cmbEstadoFactura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnEmitirFactura)
-                            .addComponent(btnActualizarFactura))
+                            .addComponent(btnAgregarFactura)
+                            .addComponent(btnEditarFactura))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnEliminarFactura)
@@ -668,11 +706,11 @@ public class Sistema extends javax.swing.JFrame {
             }
         });
 
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Pago.png"))); // NOI18N
-        jButton3.setText("Pago de reserva");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnFactura.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Pago.png"))); // NOI18N
+        btnFactura.setText("Facturador");
+        btnFactura.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnFacturaActionPerformed(evt);
             }
         });
 
@@ -682,7 +720,7 @@ public class Sistema extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(btnReserva, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE)
             .addComponent(btnCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(btnFactura, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -692,7 +730,7 @@ public class Sistema extends javax.swing.JFrame {
                 .addGap(32, 32, 32)
                 .addComponent(btnReserva)
                 .addGap(31, 31, 31)
-                .addComponent(jButton3)
+                .addComponent(btnFactura)
                 .addGap(136, 136, 136))
         );
 
@@ -765,13 +803,19 @@ public class Sistema extends javax.swing.JFrame {
         LimpiarTabla();
         ListarReservas();
         LimpiarReserva();
+        CargarClientesEnComboBox();
         jTabbedPane1.setSelectedIndex(1);
 
     }//GEN-LAST:event_btnReservaActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFacturaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+        LimpiarTabla();
+        ListarFacturas();
+        LimpiarFactura();
+        jTabbedPane1.setSelectedIndex(2);
+
+    }//GEN-LAST:event_btnFacturaActionPerformed
 
     private void btnAgregarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarClienteActionPerformed
         if (!"".equals(txtDNI.getText()) && !"".equals(txtNombreCliente.getText()) && !"".equals(txtTelefono.getText()) && !"".equals(txtDireccion.getText())) {
@@ -833,13 +877,62 @@ public class Sistema extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnEliminarClienteActionPerformed
 
-    private void btnEmitirFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEmitirFacturaActionPerformed
+    private void btnAgregarFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarFacturaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnEmitirFacturaActionPerformed
+        if (cmbEstadoFactura.getSelectedIndex() != -1 &&
+        cmbMetodoPago.getSelectedIndex() != -1 &&
+        cmbCodigoClienteFactura.getSelectedIndex() != -1) {
 
-    private void btnActualizarFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActualizarFacturaActionPerformed
+        FacturaDTO fac = new FacturaDTO();
+
+        // Fecha actual
+        java.util.Date fechaActual = new java.util.Date();
+        fac.setFechaEmision(new java.sql.Date(fechaActual.getTime()));
+
+        // 🔹 Obtener cliente
+        int codigoCliente = Integer.parseInt(cmbCodigoClienteFactura.getSelectedItem().toString());
+        fac.setCodigoCliente(codigoCliente);
+
+        // 🔹 Obtener reservas (esto debes ajustarlo si usas una JList u otra forma de seleccionar múltiples reservas)
+        List<Integer> reservas = obtenerReservasSeleccionadas(); // deberías implementar este método según tu UI
+        fac.setReserva(reservas);
+
+        if (reservas.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Debe seleccionar al menos una reserva para la factura.");
+            return;
+        }
+
+        // 🔹 Calcular monto total desde DAO
+        double montoCalculado = facturadao.calcularMontoTotal(reservas);
+        fac.setMontoTotal(montoCalculado);
+
+        // Método de pago
+        fac.setMetodoPago(cmbMetodoPago.getSelectedItem().toString());
+
+        // Estado
+        String estado = cmbEstadoFactura.getSelectedItem().toString();
+        fac.setEstadoFactura(estado);
+
+        // 🔹 Registrar factura
+        if (facturadao.RegistrarFactura(fac)) {
+            JOptionPane.showMessageDialog(null, "Factura registrada correctamente");
+            LimpiarTabla();
+            LimpiarFactura();
+            ListarFacturas();
+
+            
+        } else {
+            JOptionPane.showMessageDialog(null, "Error al registrar factura");
+        }
+
+    } else {
+        JOptionPane.showMessageDialog(null, "Por favor, complete todos los campos");
+    }
+    }//GEN-LAST:event_btnAgregarFacturaActionPerformed
+
+    private void btnEditarFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarFacturaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_btnActualizarFacturaActionPerformed
+    }//GEN-LAST:event_btnEditarFacturaActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
         // TODO add your handling code here:
@@ -989,9 +1082,9 @@ public class Sistema extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtBuscarClientesActionPerformed
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+    private void txtBuscarFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarFacturaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
+    }//GEN-LAST:event_txtBuscarFacturaActionPerformed
 
     private void TableClienteMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TableClienteMouseClicked
         // TODO add your handling code here:
@@ -1041,6 +1134,16 @@ public class Sistema extends javax.swing.JFrame {
         buscarYActualizarTablaReservas(texto);
     }//GEN-LAST:event_txtBuscarReservasKeyReleased
 
+    private void cmbCodigoClienteFacturaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cmbCodigoClienteFacturaMouseClicked
+        // TODO add your handling code here:
+        CargarClientesEnComboBoxClienteFactura();
+        
+    }//GEN-LAST:event_cmbCodigoClienteFacturaMouseClicked
+
+    private void cmbCodigoClienteFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCodigoClienteFacturaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbCodigoClienteFacturaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1079,29 +1182,29 @@ public class Sistema extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable TableCliente;
-    private javax.swing.JTable TableFactura;
+    private javax.swing.JTable TableFacturas;
     private javax.swing.JTable TableReservarPasaje;
-    private javax.swing.JButton btnActualizarFactura;
     private javax.swing.JButton btnAgregarCliente;
+    private javax.swing.JButton btnAgregarFactura;
     private javax.swing.JButton btnAgregarReserva;
     private javax.swing.JButton btnCliente;
     private javax.swing.JButton btnEditarCliente;
+    private javax.swing.JButton btnEditarFactura;
     private javax.swing.JButton btnEditarReserva;
     private javax.swing.JButton btnEliminarCliente;
     private javax.swing.JButton btnEliminarFactura;
     private javax.swing.JButton btnEliminarReserva;
-    private javax.swing.JButton btnEmitirFactura;
+    private javax.swing.JButton btnFactura;
     private javax.swing.JButton btnNuevaFactura;
     private javax.swing.JButton btnNuevaReserva;
     private javax.swing.JButton btnNuevoCliente;
     private javax.swing.JButton btnReserva;
     private javax.swing.JComboBox<String> cmbCodigoCliente;
-    private javax.swing.JComboBox<String> cmbCodigoReserva;
+    private javax.swing.JComboBox<String> cmbCodigoClienteFactura;
     private javax.swing.JComboBox<String> cmbEstadoFactura;
     private javax.swing.JComboBox<String> cmbHoraSalida;
     private javax.swing.JComboBox<String> cmbMetodoPago;
     private javax.swing.JButton jButton13;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -1129,9 +1232,9 @@ public class Sistema extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField txtAsientoAsignado;
     private javax.swing.JTextField txtBuscarClientes;
+    private javax.swing.JTextField txtBuscarFactura;
     private javax.swing.JTextField txtBuscarReservas;
     private javax.swing.JTextField txtCodigoCliente;
     private javax.swing.JTextField txtCodigoReserva;
@@ -1163,6 +1266,12 @@ private void LimpiarCliente() {
         txtAsientoAsignado.setText("");
         cmbCodigoCliente.setSelectedIndex(-1); // Deselecciona el combo
     }
+    private void LimpiarFactura() {
+    txtMontoTotal.setText("");                
+    cmbMetodoPago.setSelectedItem(-1);               
+    cmbEstadoFactura.setSelectedIndex(-1);    
+    cmbCodigoClienteFactura.setSelectedIndex(-1);  
+}
 
     public void CargarClientesEnComboBox() {
         cmbCodigoCliente.removeAllItems();
@@ -1170,6 +1279,15 @@ private void LimpiarCliente() {
 
         for (ClienteDTO cl : listaClientes) {
             cmbCodigoCliente.addItem(String.valueOf(cl.getcodigoCliente()));
+        }
+    }
+    
+    public void CargarClientesEnComboBoxClienteFactura() {
+        cmbCodigoClienteFactura.removeAllItems();
+        List<ClienteDTO> listaClientes = client.ListarCliente();
+
+        for (ClienteDTO cl : listaClientes) {
+            cmbCodigoClienteFactura.addItem(String.valueOf(cl.getcodigoCliente()));
         }
     }
 
@@ -1212,5 +1330,13 @@ private void LimpiarCliente() {
             model.addRow(fila);
         }
     }
+    private List<Integer> obtenerReservasSeleccionadas() {
+    String item = cmbCodigoClienteFactura.getSelectedItem().toString();
+    int codigoCliente = Integer.parseInt(item); 
+
+    // Llamamos al DAO
+    return facturadao.obtenerReservasNoFacturadasPorCliente(codigoCliente);
+}
+
 
 }
