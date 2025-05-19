@@ -16,6 +16,7 @@ import javax.swing.table.DefaultTableModel;
 import com.formdev.flatlaf.FlatLightLaf;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.stream.Collectors;
 import javax.swing.UIManager;
 
@@ -1147,7 +1148,9 @@ public class Sistema extends javax.swing.JFrame {
 
     private void cmbCodigoClienteFacturaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbCodigoClienteFacturaItemStateChanged
         // TODO add your handling code here:
-       
+         List<Integer> reservas = obtenerReservasSeleccionadas();
+    double montoCalculado = facturadao.calcularMontoTotal(reservas);
+    txtMontoTotal.setText(Double.toString(montoCalculado));
     }//GEN-LAST:event_cmbCodigoClienteFacturaItemStateChanged
 
     private void cmbCodigoClienteFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCodigoClienteFacturaActionPerformed
@@ -1156,9 +1159,7 @@ public class Sistema extends javax.swing.JFrame {
 
     private void cmbCodigoClienteFacturaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cmbCodigoClienteFacturaMouseClicked
         // TODO add your handling code here:
-        List<Integer> reservas = obtenerReservasSeleccionadas(); 
-        double montoCalculado = facturadao.calcularMontoTotal(reservas);
-        txtMontoTotal.setText(Double.toString(montoCalculado));
+       
     }//GEN-LAST:event_cmbCodigoClienteFacturaMouseClicked
 
     /**
@@ -1347,12 +1348,19 @@ private void LimpiarCliente() {
             model.addRow(fila);
         }
     }
-     private List<Integer> obtenerReservasSeleccionadas() {
-    String item = cmbCodigoClienteFactura.getSelectedItem().toString();
-    int codigoCliente = Integer.parseInt(item); 
+    private List<Integer> obtenerReservasSeleccionadas() {
+    Object item = cmbCodigoClienteFactura.getSelectedItem();
 
-    // Llamamos al DAO
-    return facturadao.obtenerReservasNoFacturadasPorCliente(codigoCliente);
+    if (item == null || item.toString().isEmpty()) {
+        return Collections.emptyList();
+    }
+
+    try {
+        int codigoCliente = Integer.parseInt(item.toString());
+        return facturadao.obtenerReservasNoFacturadasPorCliente(codigoCliente);
+    } catch (NumberFormatException e) {
+        return Collections.emptyList();
+    }
 }
 
 
