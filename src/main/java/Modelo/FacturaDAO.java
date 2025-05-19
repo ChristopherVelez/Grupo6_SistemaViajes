@@ -210,36 +210,36 @@ public class FacturaDAO {
         return lista;
     }
 
-    private List<Integer> obtenerReservasPorFactura(int codigoFactura) {
-        List<Integer> reservas = new ArrayList<>();
-        String sql = "SELECT CodigoReserva FROM detalle_factura WHERE CodigoFactura = ?";
+   private List<Integer> obtenerReservasPorFactura(int codigoFactura) {
+    List<Integer> reservas = new ArrayList<>();
+    String sql = "SELECT CodigoReserva FROM detalle_factura WHERE CodigoFactura = ?";
 
-        try {
-            ps = con.prepareStatement(sql);
-            ps.setInt(1, codigoFactura);
-            rs = ps.executeQuery();
+    // Usa variables locales
+    PreparedStatement localPs = null;
+    ResultSet localRs = null;
 
-            while (rs.next()) {
-                reservas.add(rs.getInt("CodigoReserva"));
-            }
-        } catch (SQLException e) {
-            System.out.println("Error al obtener reservas: " + e.getMessage());
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                // No cerramos `con` aquí para no interferir con quien lo llamó
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+    try {
+        localPs = con.prepareStatement(sql);
+        localPs.setInt(1, codigoFactura);
+        localRs = localPs.executeQuery();
+
+        while (localRs.next()) {
+            reservas.add(localRs.getInt("CodigoReserva"));
         }
-
-        return reservas;
+    } catch (SQLException e) {
+        System.out.println("Error al obtener reservas: " + e.getMessage());
+    } finally {
+        try {
+            if (localRs != null) localRs.close();
+            if (localPs != null) localPs.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+
+    return reservas;
+}
+
 
     // Listar facturas activas
     public List<FacturaDTO> ListarFacturas() {

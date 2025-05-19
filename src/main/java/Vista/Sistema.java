@@ -89,22 +89,23 @@ public class Sistema extends javax.swing.JFrame {
         TableReservarPasaje.setModel(modelo);
     }
     public void ListarFacturas() {
-    LimpiarTabla();  
     List<FacturaDTO> listaFacturas = facturadao.ListarFacturas();
-    modelo = (DefaultTableModel) TableFacturas.getModel();
-    Object[] ob = new Object[6];
 
-    for (int i = 0; i < listaFacturas.size(); i++) {
+    DefaultTableModel modelo = new DefaultTableModel();
+    modelo.setColumnIdentifiers(new Object[]{"Código", "Cliente", "Fecha", "Monto", "Pago", "Estado"});
 
-        ob[0] = listaFacturas.get(i).getCodigoFactura();        
-        ob[1] = listaFacturas.get(i).getCodigoCliente();
-        ob[2] = listaFacturas.get(i).getFechaEmision();
-        ob[3] = listaFacturas.get(i).getMontoTotal();
-        ob[4] = listaFacturas.get(i).getMetodoPago();
-        ob[5] = listaFacturas.get(i).getEstadoFactura();
-
-        modelo.addRow(ob);
+    for (FacturaDTO f : listaFacturas) {
+        modelo.addRow(new Object[]{
+            f.getCodigoFactura(),
+            f.getCodigoCliente(),
+            f.getFechaEmision(),
+            f.getMontoTotal(),
+            f.getMetodoPago(),
+            f.getEstadoFactura()
+        });
     }
+
+    System.out.println("Total filas cargadas en tabla: " + modelo.getRowCount());
 
     TableFacturas.setModel(modelo);
 }
