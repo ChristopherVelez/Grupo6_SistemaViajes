@@ -27,6 +27,7 @@ public class FacturaDAO {
     public boolean RegistrarFactura(FacturaDTO factura) {
         String sqlFactura = "INSERT INTO facturas (FechaEmision, MontoTotal, MetodoPago, EstadoFactura, CodigoCliente) VALUES (?, ?, ?, ?, ?)";
         String sqlDetalle = "INSERT INTO detalle_factura (CodigoFactura, CodigoReserva) VALUES (?, ?)";
+        String sqlReservas = "UPDATE reservas SET Estado = 0 WHERE CodigoCliente = ?";
 
         try {
             con = cn.getConnection();
@@ -47,6 +48,9 @@ public class FacturaDAO {
             if (rs.next()) {
                 codigoFacturaGenerado = rs.getInt(1);
             }
+            ps = con.prepareStatement(sqlReservas);
+            ps.setInt(1, factura.getCodigoCliente());
+            ps.executeUpdate();
 
             // Insertar en detalle_factura
             ps = con.prepareStatement(sqlDetalle);
@@ -210,36 +214,39 @@ public class FacturaDAO {
         return lista;
     }
 
-   private List<Integer> obtenerReservasPorFactura(int codigoFactura) {
-    List<Integer> reservas = new ArrayList<>();
-    String sql = "SELECT CodigoReserva FROM detalle_factura WHERE CodigoFactura = ?";
+    private List<Integer> obtenerReservasPorFactura(int codigoFactura) {
+        List<Integer> reservas = new ArrayList<>();
+        String sql = "SELECT CodigoReserva FROM detalle_factura WHERE CodigoFactura = ?";
 
-    // Usa variables locales
-    PreparedStatement localPs = null;
-    ResultSet localRs = null;
+        // Usa variables locales
+        PreparedStatement localPs = null;
+        ResultSet localRs = null;
 
-    try {
-        localPs = con.prepareStatement(sql);
-        localPs.setInt(1, codigoFactura);
-        localRs = localPs.executeQuery();
-
-        while (localRs.next()) {
-            reservas.add(localRs.getInt("CodigoReserva"));
-        }
-    } catch (SQLException e) {
-        System.out.println("Error al obtener reservas: " + e.getMessage());
-    } finally {
         try {
-            if (localRs != null) localRs.close();
-            if (localPs != null) localPs.close();
+            localPs = con.prepareStatement(sql);
+            localPs.setInt(1, codigoFactura);
+            localRs = localPs.executeQuery();
+
+            while (localRs.next()) {
+                reservas.add(localRs.getInt("CodigoReserva"));
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("Error al obtener reservas: " + e.getMessage());
+        } finally {
+            try {
+                if (localRs != null) {
+                    localRs.close();
+                }
+                if (localPs != null) {
+                    localPs.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
+
+        return reservas;
     }
-
-    return reservas;
-}
-
 
     // Listar facturas activas
     public List<FacturaDTO> ListarFacturas() {
@@ -261,7 +268,7 @@ public class FacturaDAO {
                 factura.setMetodoPago(rs.getString("MetodoPago"));
                 factura.setEstadoFactura(rs.getString("EstadoFactura"));
                 factura.setCodigoCliente(rs.getInt("CodigoCliente"));
-               
+
                 List<Integer> reservas = obtenerReservasPorFactura(codigoFactura);
                 factura.setReserva(reservas);
 
@@ -293,8 +300,7 @@ public class FacturaDAO {
         double total = 0.0;
         String sql = "SELECT PrecioPasaje FROM reservas WHERE CodigoReserva = ?";
 
-        try (Connection con = cn.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = cn.getConnection(); PreparedStatement ps = con.prepareStatement(sql)) {
 
             for (Integer codigo : codigosReserva) {
                 ps.setInt(1, codigo);
@@ -311,36 +317,51 @@ public class FacturaDAO {
 
         return total;
     }
-    
-   
-    
-    
-    public List<Integer> obtenerReservasNoFacturadasPorCliente(int codigoCliente) {
-    List<Integer> lista = new ArrayList<>();
-    String sql = "SELECT CodigoReserva FROM reservas WHERE CodigoCliente = ? AND Estado = 1";
-    String sqlReservas = "UPDATE reservas SET Estado = 0 WHERE CodigoCliente = ?";
 
-    try {
-         con = cn.getConnection();
+    public List<Integer> obtenerReservasNoFacturadasPorCliente(int codigoCliente) {
+        List<Integer> lista = new ArrayList<>();
+        String sql = "SELECT CodigoReserva FROM reservas WHERE CodigoCliente = ? AND Estado = 1";
+
+        try {
+            con = cn.getConnection();
             ps = con.prepareStatement(sql);
-        ps.setInt(1, codigoCliente);
-        
-        ResultSet rs = ps.executeQuery();
-        
-        
-         ps = con.prepareStatement(sqlReservas);
             ps.setInt(1, codigoCliente);
-            ps.executeUpdate();
-        
-        while (rs.next()) {
-            lista.add(rs.getInt("CodigoReserva"));
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                lista.add(rs.getInt("CodigoReserva"));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al obtener reservas no facturadas: " + e.getMessage());
         }
 
+        return lista;
+    }
+    
+    
+    public String obtenerCadenaReservasPorFactura(int codigoFactura) {
+    StringBuilder sb = new StringBuilder();
+    String sql = "SELECT CodigoReserva FROM detalle_factura WHERE CodigoFactura = ?";
+
+    try (Connection con = cn.getConnection(); 
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setInt(1, codigoFactura);
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                if (sb.length() > 0) {
+                    sb.append(", ");
+                }
+                sb.append(rs.getInt("CodigoReserva"));
+            }
+        }
     } catch (SQLException e) {
-        System.err.println("Error al obtener reservas no facturadas: " + e.getMessage());
+        System.out.println("Error al obtener cadena de reservas: " + e.getMessage());
     }
 
-    return lista;
+    return sb.toString(); // Retorna por ejemplo "28, 29, 30"
 }
 
 }

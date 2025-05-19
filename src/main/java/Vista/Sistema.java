@@ -92,11 +92,15 @@ public class Sistema extends javax.swing.JFrame {
     List<FacturaDTO> listaFacturas = facturadao.ListarFacturas();
 
     DefaultTableModel modelo = new DefaultTableModel();
-    modelo.setColumnIdentifiers(new Object[]{"Código", "Cliente", "Fecha", "Monto", "Pago", "Estado"});
+    modelo.setColumnIdentifiers(new Object[]{"Código","Reservas", "Cliente", "Fecha", "Monto", "Pago", "Estado"});
 
     for (FacturaDTO f : listaFacturas) {
+                String reservas = facturadao.obtenerCadenaReservasPorFactura(f.getCodigoFactura());
+
         modelo.addRow(new Object[]{
+            
             f.getCodigoFactura(),
+            reservas,
             f.getCodigoCliente(),
             f.getFechaEmision(),
             f.getMontoTotal(),
@@ -577,11 +581,16 @@ public class Sistema extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Código de factura	", "Código de cliente", "Fecha de emisión	", "Monto total	", "Método de pago	", "Estado de factura	"
+                "Código de factura	", "Código de cliente", "Codigo de reservas", "Fecha de emisión	", "Monto total	", "Método de pago	", "Estado de factura	"
             }
         ));
         jScrollPane3.setViewportView(TableFacturas);
 
+        cmbCodigoClienteFactura.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                cmbCodigoClienteFacturaItemStateChanged(evt);
+            }
+        });
         cmbCodigoClienteFactura.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 cmbCodigoClienteFacturaMouseClicked(evt);
@@ -814,6 +823,7 @@ public class Sistema extends javax.swing.JFrame {
         LimpiarTabla();
         ListarFacturas();
         LimpiarFactura();
+        CargarClientesEnComboBoxClienteFactura();
         jTabbedPane1.setSelectedIndex(2);
 
     }//GEN-LAST:event_btnFacturaActionPerformed
@@ -1135,15 +1145,21 @@ public class Sistema extends javax.swing.JFrame {
         buscarYActualizarTablaReservas(texto);
     }//GEN-LAST:event_txtBuscarReservasKeyReleased
 
-    private void cmbCodigoClienteFacturaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cmbCodigoClienteFacturaMouseClicked
+    private void cmbCodigoClienteFacturaItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_cmbCodigoClienteFacturaItemStateChanged
         // TODO add your handling code here:
-        CargarClientesEnComboBoxClienteFactura();
-        
-    }//GEN-LAST:event_cmbCodigoClienteFacturaMouseClicked
+       
+    }//GEN-LAST:event_cmbCodigoClienteFacturaItemStateChanged
 
     private void cmbCodigoClienteFacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbCodigoClienteFacturaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_cmbCodigoClienteFacturaActionPerformed
+
+    private void cmbCodigoClienteFacturaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cmbCodigoClienteFacturaMouseClicked
+        // TODO add your handling code here:
+        List<Integer> reservas = obtenerReservasSeleccionadas(); 
+        double montoCalculado = facturadao.calcularMontoTotal(reservas);
+        txtMontoTotal.setText(Double.toString(montoCalculado));
+    }//GEN-LAST:event_cmbCodigoClienteFacturaMouseClicked
 
     /**
      * @param args the command line arguments
@@ -1331,13 +1347,14 @@ private void LimpiarCliente() {
             model.addRow(fila);
         }
     }
-    private List<Integer> obtenerReservasSeleccionadas() {
+     private List<Integer> obtenerReservasSeleccionadas() {
     String item = cmbCodigoClienteFactura.getSelectedItem().toString();
     int codigoCliente = Integer.parseInt(item); 
 
     // Llamamos al DAO
     return facturadao.obtenerReservasNoFacturadasPorCliente(codigoCliente);
 }
+
 
 
 }
