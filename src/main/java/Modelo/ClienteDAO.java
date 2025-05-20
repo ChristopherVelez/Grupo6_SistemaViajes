@@ -164,4 +164,28 @@ public class ClienteDAO {
         return lista;
     }
 
+    
+    public ClienteDTO obtenerClientePorCodigo(int codigoCliente) {
+    ClienteDTO cliente = null;
+    String sql = "SELECT * FROM clientes WHERE CodigoCliente = ?";
+    try (Connection con = cn.getConnection();
+         PreparedStatement ps = con.prepareStatement(sql)) {
+
+        ps.setInt(1, codigoCliente);
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            cliente = new ClienteDTO();
+            cliente.setcodigoCliente(rs.getInt("CodigoCliente"));
+            cliente.setDni(rs.getString("Dni"));
+            cliente.setNombre(rs.getString("Nombre"));
+            cliente.setTelefono(rs.getString("Telefono"));
+            cliente.setDireccion(rs.getString("Direccion"));
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return cliente;
+}
 }

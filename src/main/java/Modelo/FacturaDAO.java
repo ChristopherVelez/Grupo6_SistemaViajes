@@ -364,4 +364,21 @@ public class FacturaDAO {
     return sb.toString(); // Retorna por ejemplo "28, 29, 30"
 }
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }

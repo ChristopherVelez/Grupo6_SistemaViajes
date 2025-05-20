@@ -215,4 +215,57 @@ public boolean asientoYaReservado(String origen, String destino, String fecha, S
 }
 
 
+     
+     public List<ReservaDTO> obtenerReservasPorCodigosReservas(List<Integer> codigosReservas) {
+    List<ReservaDTO> lista = new ArrayList<>();
+    if (codigosReservas == null || codigosReservas.isEmpty()) {
+        return lista; // Devuelve lista vacía si no hay códigos
+    }
+
+    // Construir parte dinámica del IN (?, ?, ?)
+    StringBuilder placeholders = new StringBuilder();
+    for (int i = 0; i < codigosReservas.size(); i++) {
+        placeholders.append("?");
+        if (i < codigosReservas.size() - 1) {
+            placeholders.append(",");
+        }
+    }
+
+    String sql = "SELECT * FROM reservas WHERE CodigoReserva IN (" + placeholders.toString()+ ")";
+
+    try {
+        con = cn.getConnection();
+        ps = con.prepareStatement(sql);
+        // Establecer los valores del IN (?, ?, ?)
+        for (int i = 0; i < codigosReservas.size(); i++) {
+            ps.setInt(i + 1, codigosReservas.get(i));
+        }
+
+        rs = ps.executeQuery();
+        while (rs.next()) {
+            ReservaDTO r = new ReservaDTO();
+            r.setCodigoReserva(rs.getInt("CodigoReserva"));
+            r.setOrigen(rs.getString("Origen"));
+            r.setDestino(rs.getString("Destino"));
+            r.setFechaViaje(rs.getString("FechaViaje"));
+            r.setHoraSalida(rs.getString("HoraSalida"));
+            r.setAsientoAsignado(rs.getString("AsientoAsignado"));
+            r.setPrecioPasaje(rs.getDouble("PrecioPasaje"));
+            // Agrega más campos si los necesitas
+            lista.add(r);
+        }
+    } catch (SQLException e) {
+        System.out.println("Error al obtener reservas por facturas: " + e.getMessage());
+    } finally {
+        try {
+            if (rs != null) rs.close();
+            if (ps != null) ps.close();
+            if (con != null) con.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    return lista;
+}
 }
