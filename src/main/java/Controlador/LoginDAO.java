@@ -1,6 +1,8 @@
 
-package Modelo;
+package Controlador;
 
+import ConexionDb.Conexion;
+import Modelo.LoginDTO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

@@ -4,11 +4,11 @@
  */
 package Vista;
 
-import Modelo.ClienteDAO;
+import Controlador.ClienteDAO;
 import Modelo.ClienteDTO;
-import Modelo.FacturaDAO;
+import Controlador.FacturaDAO;
 import Modelo.FacturaDTO;
-import Modelo.ReservaDAO;
+import Controlador.ReservaDAO;
 import Modelo.ReservaDTO;
 import java.util.List;
 import javax.swing.JOptionPane;
