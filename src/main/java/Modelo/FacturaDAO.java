@@ -85,59 +85,7 @@ public class FacturaDAO {
         }
     }
 
-    public boolean editarFactura(FacturaDTO factura) {
-        String sqlUpdate = "UPDATE facturas SET FechaEmision=?, MontoTotal=?, MetodoPago=?, EstadoFactura=?, CodigoCliente=? WHERE CodigoFactura=?";
-        String sqlDeleteDetalle = "DELETE FROM detalle_factura WHERE CodigoFactura=?";
-        String sqlInsertDetalle = "INSERT INTO detalle_factura (CodigoFactura, CodigoReserva) VALUES (?, ?)";
-
-        try {
-            con = cn.getConnection();
-            con.setAutoCommit(false);
-
-            // Actualizar factura
-            ps = con.prepareStatement(sqlUpdate);
-            ps.setDate(1, new java.sql.Date(factura.getFechaEmision().getTime()));
-            ps.setDouble(2, factura.getMontoTotal());
-            ps.setString(3, factura.getMetodoPago());
-            ps.setString(4, factura.getEstadoFactura());
-            ps.setInt(5, factura.getCodigoCliente());
-            ps.setInt(6, factura.getCodigoFactura());
-            ps.executeUpdate();
-
-            // Eliminar detalle anterior
-            ps = con.prepareStatement(sqlDeleteDetalle);
-            ps.setInt(1, factura.getCodigoFactura());
-            ps.executeUpdate();
-
-            // Insertar nuevo detalle
-            ps = con.prepareStatement(sqlInsertDetalle);
-            for (Integer codReserva : factura.getReserva()) {
-                ps.setInt(1, factura.getCodigoFactura());
-                ps.setInt(2, codReserva);
-                ps.addBatch();
-            }
-            ps.executeBatch();
-
-            con.commit();
-            return true;
-        } catch (SQLException e) {
-            try {
-                if (con != null) {
-                    con.rollback();
-                }
-            } catch (SQLException ex) {
-            }
-            JOptionPane.showMessageDialog(null, e.toString());
-            return false;
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-            }
-        }
-    }
+    
 
     public boolean eliminarFactura(int codigoFactura) {
         String sql = "UPDATE facturas SET Estado = 0 WHERE CodigoFactura = ?";
