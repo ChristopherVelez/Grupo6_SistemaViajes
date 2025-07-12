@@ -20,6 +20,42 @@ public class ClienteDTO {
     }
 
     public ClienteDTO(int codigoCliente, String dni, String nombre, String telefono, String direccion) {
+        
+        // Validar código
+        if (codigoCliente <= 0) {
+            throw new IllegalArgumentException("El código debe ser mayor que cero.");
+        }
+
+        // Validar nombre
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new IllegalArgumentException("El nombre no puede estar vacío.");
+        }
+        if (nombre.matches(".*\\d.*")) {
+            throw new IllegalArgumentException("El nombre no debe contener números.");
+        }
+
+        // Validar cédula (dni)
+        if (dni == null || dni.trim().isEmpty()) {
+            throw new IllegalArgumentException("El DNI no puede estar vacío.");
+        }
+        if (!dni.matches("\\d{10}")) {
+            throw new IllegalArgumentException("El DNI debe tener exactamente 10 dígitos.");
+        }
+
+        // Validar teléfono
+        if (telefono == null || telefono.trim().isEmpty()) {
+            throw new IllegalArgumentException("El teléfono no puede estar vacío.");
+        }
+        if (!telefono.matches("\\d{10}")) {
+            throw new IllegalArgumentException("El teléfono debe contener solo 10 dígitos.");
+        }
+
+        // Validar dirección
+        if (direccion == null || direccion.trim().isEmpty()) {
+            throw new IllegalArgumentException("La dirección no puede estar vacía.");
+        }
+        
+        
         this.codigoCliente = codigoCliente;
         this.dni = dni;
         this.nombre = nombre;

@@ -28,6 +28,56 @@ public class FacturaDTO {
     }
 
     public FacturaDTO(int codigoFactura, int codigoCliente, Date fechaEmision, double montoTotal, String metodoPago, String estadoFactura, List<Integer> reserva, String dniCliente, String nombreCliente) {
+        
+        // Validar código factura
+        if (codigoFactura <= 0) {
+            throw new IllegalArgumentException("El código de factura debe ser mayor que cero.");
+        }
+
+        // Validar código cliente
+        if (codigoCliente <= 0) {
+            throw new IllegalArgumentException("El código de cliente debe ser mayor que cero.");
+        }
+
+        // Validar fecha de emisión
+        if (fechaEmision == null) {
+            throw new IllegalArgumentException("La fecha de emisión no puede ser nula.");
+        }
+
+        // Validar monto total
+        if (montoTotal < 0) {
+            throw new IllegalArgumentException("El monto total no puede ser negativo.");
+        }
+
+        // Validar método de pago
+        if (metodoPago == null || metodoPago.trim().isEmpty()) {
+            throw new IllegalArgumentException("El método de pago no puede estar vacío.");
+        }
+
+        // Validar estado de la factura
+        if (estadoFactura == null || estadoFactura.trim().isEmpty()) {
+            throw new IllegalArgumentException("El estado de la factura no puede estar vacío.");
+        }
+
+        // Validar lista de reservas
+        if (reserva == null || reserva.isEmpty()) {
+            throw new IllegalArgumentException("Debe haber al menos una reserva asociada.");
+        }
+
+        // Validar DNI del cliente
+        if (dniCliente == null || !dniCliente.matches("\\d{10}")) {
+            throw new IllegalArgumentException("El DNI del cliente debe tener exactamente 10 dígitos.");
+        }
+
+        // Validar nombre del cliente
+        if (nombreCliente == null || nombreCliente.trim().isEmpty()) {
+            throw new IllegalArgumentException("El nombre del cliente no puede estar vacío.");
+        }
+        if (nombreCliente.matches(".*\\d.*")) {
+            throw new IllegalArgumentException("El nombre del cliente no debe contener números.");
+        }
+        
+       
         this.codigoFactura = codigoFactura;
         this.codigoCliente = codigoCliente;
         this.fechaEmision = fechaEmision;
