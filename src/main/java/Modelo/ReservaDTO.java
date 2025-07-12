@@ -15,13 +15,59 @@ public class ReservaDTO {
     private String asientoAsignado;
     private double precioPasaje;
 
-   
-
-
+    
+    
+    
     public ReservaDTO() {
     }
 
     public ReservaDTO(int codigoReserva, int codigoCliente, String origen, String destino, String fechaViaje, String horaSalida, String asientoAsignado, double precioPasaje) {
+        
+        if (codigoReserva <= 0) {
+            throw new IllegalArgumentException("El código de reserva debe ser mayor a cero.");
+        }
+        
+        if (codigoCliente <= 0) {
+            throw new IllegalArgumentException("El código de cliente debe ser mayor a cero.");
+        }
+        
+        if (origen == null || origen.trim().isEmpty()) {
+            throw new IllegalArgumentException("El origen no puede estar vacío.");
+        }
+        
+        if (destino == null || destino.trim().isEmpty()) {
+            throw new IllegalArgumentException("El destino no puede estar vacío.");
+        }
+        
+        if (origen.equalsIgnoreCase(destino)) {
+            throw new IllegalArgumentException("El origen y el destino no pueden ser iguales.");
+        }
+    
+        if (fechaViaje == null || fechaViaje.trim().isEmpty()) {
+            throw new IllegalArgumentException("La fecha de viaje no puede estar vacía.");
+        }
+        
+        if (!fechaViaje.matches("\\d{4}-\\d{2}-\\d{2}")) {
+            throw new IllegalArgumentException("La fecha de viaje debe tener el formato YYYY-MM-DD.");
+        }
+        
+        if (horaSalida == null || horaSalida.trim().isEmpty()) {
+            throw new IllegalArgumentException("La hora de salida no puede estar vacía.");
+        }
+        
+        if (!horaSalida.matches("\\d{2}:\\d{2}")) {
+            throw new IllegalArgumentException("La hora de salida debe tener el formato HH:mm.");
+        }
+        
+        if (asientoAsignado == null || asientoAsignado.trim().isEmpty()) {
+            throw new IllegalArgumentException("El asiento asignado no puede estar vacío.");
+        }
+        
+        if (precioPasaje <= 0) {
+            throw new IllegalArgumentException("El precio del pasaje debe ser mayor a cero.");
+        }
+        
+        
         this.codigoReserva = codigoReserva;
         this.codigoCliente = codigoCliente;
         this.origen = origen;
