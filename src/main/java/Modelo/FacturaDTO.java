@@ -77,6 +77,10 @@ public class FacturaDTO {
             throw new IllegalArgumentException("El nombre del cliente no debe contener números.");
         }
         
+        //Validar estado de la Factura
+        if (!estadoFactura.matches("[a-zA-Z\\s]+")) {  // Solo letras y espacios permitidos
+            throw new IllegalArgumentException("El estado de la factura debe ser un texto descriptivo sin números.");
+        }
        
         this.codigoFactura = codigoFactura;
         this.codigoCliente = codigoCliente;
