@@ -5,14 +5,13 @@
 package Testing;
 
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.BeforeAll;
+import Controlador.ClienteDAO;
+import Controlador.LoginDAO;
+import Controlador.ReservaDAO;
+import Modelo.ClienteDTO;
+import Modelo.LoginDTO;
+import Modelo.ReservaDTO;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -22,73 +21,72 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class TestCajaBlanca {
  
-    
-    static Connection conn;
-
-    @BeforeAll
-    public static void conectarBD() throws Exception {
-        conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sistemareserva", "root", ""); // Ajusta tu contraseña
-    }
-
-    @AfterAll
-    public static void cerrarBD() throws Exception {
-        conn.close();
-    }
-
-    //Criterio de Comandos: Insertar cliente
+    ////Criterio de Comandos: Insertar cliente
     @Test
-    public void testInsertarCliente() throws Exception {
-        String sql = "INSERT INTO clientes (DNI, Nombre, Telefono, Direccion, Estado) VALUES (?, ?, ?, ?, ?)";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setString(1, "0951317668");
-        stmt.setString(2, "Jeremy");
-        stmt.setString(3, "0954667890");
-        stmt.setString(4, "Febres cordero 234");
-        stmt.setInt(5, 1);
-
-        int filas = stmt.executeUpdate();
-        assertEquals(1, filas);
+        public void testInsertarCliente() throws Exception {
+        ClienteDAO dao = new ClienteDAO();
+        ClienteDTO cliente = new ClienteDTO(65, "0987622111", "Lourdes", "0922314411", "Mucho lote");
+        boolean resultado = dao.RegistrarCliente(cliente);
+        assertTrue(resultado);
         System.out.println("Cliente agregado con éxito.");
     }
 
-    //Criterio de Decisiones: Consultar clientes activos o inactivos
+    //Criterio de Decisiones: Validar credenciales de usuario
     @Test
-    public void testBuscarClientePorEstado() throws Exception {
-        String sql = "SELECT * FROM clientes WHERE Estado = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, 1); // Clientes activos
+        public void testLoginConUsuarioCorrecto() {
+        LoginDAO dao = new LoginDAO();
+        LoginDTO resultado = dao.log("vendedor@gmail.com", "12345");
 
-        ResultSet rs = stmt.executeQuery();
-        boolean tieneResultados = rs.next();
-        assertTrue(tieneResultados);
-        System.out.println("Cliente activo encontrado.");
+        // Se considera éxito si el correo no es null (o si el ID > 0 si lo prefieres)
+        assertNotNull(resultado.getCorreo());
+        System.out.println("Login exitoso con credenciales validas.");
     }
+
+
 
     //Condiciones y Decisiones: Verificación antes de registrar
     @Test
-    public void testValidarDatosReserva() {
-        int cliente = 54;
-        String destino = "Guayaquil";
-        double precio = 5.00;
+        public void testValidarDatosReservaExistente() {
+        ReservaDAO dao = new ReservaDAO();
 
-        boolean datosValidos = (cliente > 0) && (destino != null && !destino.isEmpty()) && (precio > 0);
-        assertTrue(datosValidos); // Evalúa cada condición V/F y su efecto
-        System.out.println("Validación de datos de reserva exitosa.");
+        // Buscar reservas
+        List<ReservaDTO> reservas = dao.buscarReservasPorClienteOCodigo("51");
+        System.out.println("Cantidad de reservas encontradas: " + reservas.size());
+
+        assertFalse(reservas.isEmpty(), "No se encontraron reservas activas con ese código.");
+
+        ReservaDTO reserva = reservas.get(0);
+        assertNotNull(reserva, "La reserva obtenida es null");
+
+        boolean datosValidos = reserva.getCodigoCliente() > 0 &&
+        reserva.getDestino() != null && !reserva.getDestino().isEmpty() &&
+        reserva.getPrecioPasaje() > 0;
+
+        assertTrue(datosValidos, "Los datos de la reserva no son válidos");
+        System.out.println("Validación de datos de reserva existente exitosa.");
     }
-
+    
+        
     //Condiciones múltiples: Buscar reservas por cliente, destino y estado
     @Test
-    public void testBuscarReservaAvanzada() throws Exception {
-        String sql = "SELECT * FROM reservas WHERE CodigoCliente = ? AND Destino = ? AND Estado = ?";
-        PreparedStatement stmt = conn.prepareStatement(sql);
-        stmt.setInt(1, 54);
-        stmt.setString(2, "Guayaquil");
-        stmt.setInt(3, 0);
+        public void testBuscarReservaPorClienteDestinoYAsiento() {
+        ReservaDAO dao = new ReservaDAO();
 
-        ResultSet rs = stmt.executeQuery();
-        boolean encontrada = rs.next();
-        assertTrue(encontrada);
-         System.out.println("Reserva encontrada con múltiples condiciones.");
+        String filtro = "50";
+        String destinoEsperado = "Guayaquil";
+        String asientoEsperado = "22"; 
+        
+        List<ReservaDTO> reservas = dao.buscarReservasPorClienteOCodigo(filtro);
+        assertFalse(reservas.isEmpty(), "No se encontraron reservas con ese código.");
+
+        // Validar que haya una reserva con ese destino y asiento
+        boolean encontrada = reservas.stream()
+        .anyMatch(r -> r.getDestino().equalsIgnoreCase(destinoEsperado)
+                    && r.getAsientoAsignado().equalsIgnoreCase(asientoEsperado));
+
+        assertTrue(encontrada, "No se encontró ninguna reserva con ese destino y asiento.");
+        System.out.println("Reserva encontrada con cliente/código, destino y asiento.");
     }
+
 
 }
